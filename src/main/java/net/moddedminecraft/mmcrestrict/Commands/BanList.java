@@ -34,22 +34,11 @@ public class BanList implements CommandExecutor {
             if (!item.getBanreason().isEmpty()) {
                 banreason = " &3- &7" + item.getBanreason();
             }
-            boolean ownPerm = plugin.checkPerm(src, "own", item.getItemid());
-            boolean usePerm = plugin.checkPerm(src, "use", item.getItemid());
-            String use = "";
-            String own = "";
-
-            if (usePerm != item.getUsagebanned()) {
-                use = " &e(&2" + usePerm + "&e)";
-            }
-            if (ownPerm != item.getOwnershipbanned()) {
-                own = " &e(&2" + ownPerm + "&e)";
-            }
             send.append(plugin.fromLegacy("&3- &6" + item.getItemname() + banreason));
             if (src.hasPermission(Permissions.LIST_EXTRA) && src.hasPermission(Permissions.EDIT_BANNED_ITEM)) {
                 send.onHover(TextActions.showText(plugin.fromLegacy(
-                        "&cBanned methods &7- &6Use&7: " + item.getUsagebanned() + use +
-                                " &6Own&7: " + item.getOwnershipbanned() + own +
+                        "&cBanned methods &7- &6Use&7: " + item.getUsagebanned() +
+                                " &6Own&7: " + item.getOwnershipbanned() +
                                 " &6World&7: " + item.getWorldbanned() + ""
                                 + "\n&7Id: " + item.getItemid()
                                 + "\n&3Click to edit this item"
@@ -57,15 +46,15 @@ public class BanList implements CommandExecutor {
                 send.onClick(TextActions.runCommand("/restrict edit " + item.getItemid()));
             } else if (src.hasPermission(Permissions.LIST_EXTRA) && !src.hasPermission(Permissions.EDIT_BANNED_ITEM)) {
                 send.onHover(TextActions.showText(plugin.fromLegacy(
-                        "&cBanned methods &7- &6Use&7: " + item.getUsagebanned() + use +
-                                " &6Own&7: " + item.getOwnershipbanned() + own +
+                        "&cBanned methods &7- &6Use&7: " + item.getUsagebanned() +
+                                " &6Own&7: " + item.getOwnershipbanned() +
                                 " &6World&7: " + item.getWorldbanned()
                                 + "\n&7Id: " + item.getItemid()
                 )));
             } else {
                 send.onHover(TextActions.showText(plugin.fromLegacy(
-                        "&cBanned methods &7- &6Use&7: " + item.getUsagebanned() + use +
-                                " &6Own&7: " + item.getOwnershipbanned() + own +
+                        "&cBanned methods &7- &6Use&7: " + item.getUsagebanned() +
+                                " &6Own&7: " + item.getOwnershipbanned() +
                                 " &6World&7: " + item.getWorldbanned()
                 )));
             }
