@@ -47,6 +47,10 @@ public class Edit implements CommandExecutor {
                     for (ItemData item : items) {
                         if (item.getItemid().equals(itemType)) {
                             switch (option) {
+                                case "name":
+                                    item.setItemname(value);
+                                    src.sendMessage(plugin.fromLegacy("&2Name set to: &6" + value));
+                                    break;
                                 case "reason":
                                     item.setBanreason(value);
                                     src.sendMessage(plugin.fromLegacy("&2Reason set to: &6" + value));
@@ -111,7 +115,11 @@ public class Edit implements CommandExecutor {
                                         .build());
                             }
                             contents.add(Text.builder().append(plugin.fromLegacy("&6ID: &7" + item.getItemid())).build());
-                            contents.add(Text.builder().append(plugin.fromLegacy("&6Name: &7" + item.getItemname())).build());
+
+                            contents.add(Text.builder().append(plugin.fromLegacy("&6Name: &7" + item.getItemname()))
+                                    .onClick(TextActions.suggestCommand("/restrict edit " + item.getItemid() + " name " +item.getItemname()))
+                                    .onHover(TextActions.showText(plugin.fromLegacy("&3Click here to change the value of &6Name"))).build());
+
 
                             contents.add(Text.builder().append(plugin.fromLegacy("&6Ban Reason: &7" + item.getBanreason()))
                                     .onClick(TextActions.suggestCommand("/restrict edit " + item.getItemid() + " reason [MESSAGE]"))

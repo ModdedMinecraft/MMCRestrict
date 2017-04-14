@@ -47,6 +47,11 @@ public class ItemDataUtil {
     //    this.craftingbanned = craftingbanned;
     //}
 
+
+    public void setItemname(String itemname) {
+        this.itemname = itemname;
+    }
+
     public void setBanreason(String banreason) {
         this.banreason = banreason;
     }
