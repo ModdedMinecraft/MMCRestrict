@@ -125,7 +125,7 @@ public class Main {
                 put("reason", "reason");
                 put("use", "use");
                 put("own", "own");
-                put("craft", "craft");
+                put("name", "name");
                 put("world", "world");
             }
         };
