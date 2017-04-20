@@ -256,22 +256,26 @@ public class EventListener {
         }
         final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         BlockSnapshot targetBlock = event.getTargetBlock();
-
-        String itemID = targetBlock.getState().getId();
-        DataContainer container = targetBlock.toContainer();
-        DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-        int unsafeDamage = 0;
-        if (container.get(query).isPresent()) {
-            unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-        }
-        if (unsafeDamage != 0) {
-            itemID = itemID + ":" + unsafeDamage;
-        }
+        String itemID = targetBlock.getExtendedState().getType().getId();
 
         for (ItemData item : items) {
-            if (item.getItemid().equals(itemID) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemID)) {
+            String itemid = itemID;
+            if (item.getItemid().contains(itemID)) {
+                ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
+
+                DataContainer container = itemStack.toContainer();
+                DataQuery query = DataQuery.of('/', "UnsafeDamage");
+
+                int unsafeDamage = 0;
+                if (container.get(query).isPresent()) {
+                    unsafeDamage = Integer.parseInt(container.get(query).get().toString());
+                }
+                if (unsafeDamage != 0) {
+                    itemid = itemID + ":" + unsafeDamage;
+                }
+            }
+            if (item.getItemid().equals(itemid) && item.getUsagebanned()) {
+                if (plugin.checkPerm(player, "use", itemid)) {
                     String reason = "";
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
@@ -325,22 +329,26 @@ public class EventListener {
         }
         final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         BlockSnapshot targetBlock = event.getTargetBlock();
-
-        String itemID = targetBlock.getState().getId();
-        DataContainer container = targetBlock.toContainer();
-        DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-        int unsafeDamage = 0;
-        if (container.get(query).isPresent()) {
-            unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-        }
-        if (unsafeDamage != 0) {
-            itemID = itemID + ":" + unsafeDamage;
-        }
+        String itemID = targetBlock.getExtendedState().getType().getId();
 
         for (ItemData item : items) {
-            if (item.getItemid().equals(itemID) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemID)) {
+            String itemid = itemID;
+            if (item.getItemid().contains(itemID)) {
+                ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
+
+                DataContainer container = itemStack.toContainer();
+                DataQuery query = DataQuery.of('/', "UnsafeDamage");
+
+                int unsafeDamage = 0;
+                if (container.get(query).isPresent()) {
+                    unsafeDamage = Integer.parseInt(container.get(query).get().toString());
+                }
+                if (unsafeDamage != 0) {
+                    itemid = itemID + ":" + unsafeDamage;
+                }
+            }
+            if (item.getItemid().equals(itemid) && item.getUsagebanned()) {
+                if (plugin.checkPerm(player, "use", itemid)) {
                     String reason = "";
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
@@ -359,22 +367,27 @@ public class EventListener {
         }
         final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         BlockSnapshot targetBlock = event.getTargetBlock();
+        String itemID = targetBlock.getExtendedState().getType().getId();
 
-        String itemID = targetBlock.getState().getId();
-        DataContainer container = targetBlock.toContainer();
-        DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-        int unsafeDamage = 0;
-        if (container.get(query).isPresent()) {
-            unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-        }
-        if (unsafeDamage != 0) {
-            itemID = itemID + ":" + unsafeDamage;
-        }
 
         for (ItemData item : items) {
-            if (item.getItemid().equals(itemID) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemID)) {
+            String itemid = itemID;
+            if (item.getItemid().contains(itemID)) {
+                ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
+
+                DataContainer container = itemStack.toContainer();
+                DataQuery query = DataQuery.of('/', "UnsafeDamage");
+
+                int unsafeDamage = 0;
+                if (container.get(query).isPresent()) {
+                    unsafeDamage = Integer.parseInt(container.get(query).get().toString());
+                }
+                if (unsafeDamage != 0) {
+                    itemid = itemID + ":" + unsafeDamage;
+                }
+            }
+            if (item.getItemid().equals(itemid) && item.getUsagebanned()) {
+                if (plugin.checkPerm(player, "use", itemid)) {
                     String reason = "";
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
@@ -394,22 +407,27 @@ public class EventListener {
 
         final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         BlockSnapshot targetBlock = event.getTargetBlock();
+        String itemID = targetBlock.getExtendedState().getType().getId();
 
-        String itemID = targetBlock.getState().getId();
-        DataContainer container = targetBlock.toContainer();
-        DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-        int unsafeDamage = 0;
-        if (container.get(query).isPresent()) {
-            unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-        }
-        if (unsafeDamage != 0) {
-            itemID = itemID + ":" + unsafeDamage;
-        }
 
         for (ItemData item : items) {
-            if (item.getItemid().equals(itemID) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemID)) {
+            String itemid = itemID;
+            if (item.getItemid().contains(itemID)) {
+                ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
+
+                DataContainer container = itemStack.toContainer();
+                DataQuery query = DataQuery.of('/', "UnsafeDamage");
+
+                int unsafeDamage = 0;
+                if (container.get(query).isPresent()) {
+                    unsafeDamage = Integer.parseInt(container.get(query).get().toString());
+                }
+                if (unsafeDamage != 0) {
+                    itemid = itemID + ":" + unsafeDamage;
+                }
+            }
+            if (item.getItemid().equals(itemid) && item.getUsagebanned()) {
+                if (plugin.checkPerm(player, "use", itemid)) {
                     String reason = "";
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();

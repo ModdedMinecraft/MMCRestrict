@@ -43,9 +43,9 @@ public class Search implements CommandExecutor {
                 loadedChunks.forEach(chunk -> {
                     Vector3i min = chunk.getBlockMin();
                     Vector3i max = chunk.getBlockMax();
-                    for (int x = min.getX(); x < max.getX(); x++) {
-                        for (int y = min.getY(); y < max.getY(); y++) {
-                            for (int z = min.getZ(); z < max.getZ(); z++) {
+                    for (int x = min.getX(); x <= max.getX(); x++) {
+                        for (int y = min.getY(); y <= max.getY(); y++) {
+                            for (int z = min.getZ(); z <= max.getZ(); z++) {
                                 BlockState block = chunk.getBlock(x, y, z);
                                 if (block.getType().getId().equals(itemType.getId())) {
                                     Text.Builder send = Text.builder();

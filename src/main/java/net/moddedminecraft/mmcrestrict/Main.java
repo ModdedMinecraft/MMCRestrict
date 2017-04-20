@@ -4,7 +4,6 @@ import com.flowpowered.math.vector.Vector3i;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import net.moddedminecraft.mmcrestrict.Commands.*;
-import net.moddedminecraft.mmcrestrict.Commands.Hand;
 import net.moddedminecraft.mmcrestrict.Data.ItemData;
 import net.moddedminecraft.mmcrestrict.Data.ItemData.ItemDataSerializer;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -36,7 +35,10 @@ import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -227,9 +229,9 @@ public class Main {
                     loadedChunks.forEach(chunk -> {
                         Vector3i min = chunk.getBlockMin();
                         Vector3i max = chunk.getBlockMax();
-                        for (int x = min.getX(); x < max.getX(); x++) {
-                            for (int y = min.getY(); y < max.getY(); y++) {
-                                for (int z = min.getZ(); z < max.getZ(); z++) {
+                        for (int x = min.getX(); x <= max.getX(); x++) {
+                            for (int y = min.getY(); y <= max.getY(); y++) {
+                                for (int z = min.getZ(); z <= max.getZ(); z++) {
                                     BlockState block = chunk.getBlock(x, y, z);
                                     Location blockLoc = chunk.getLocation(x, y, z);
                                     for (ItemData item : items) {
@@ -268,6 +270,31 @@ public class Main {
         } else {
             return false;
         }
+    }
+
+    public void logToFile(String message) {
+        try {
+            if (!Files.exists(ConfigDir)) {
+                Files.createDirectory(ConfigDir);
+            }
+
+            Path saveTo = ConfigDir.resolve("action-log.txt");
+
+            if (!Files.exists(saveTo)) {
+                Files.createFile(saveTo);
+            }
+
+            FileWriter fw = new FileWriter(saveTo.toFile(), true);
+            PrintWriter pw = new PrintWriter(fw);
+
+            pw.println(message);
+            pw.flush();
+            pw.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
