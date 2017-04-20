@@ -38,6 +38,7 @@ public class Search implements CommandExecutor {
         final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
         List<Text> contents = new ArrayList<>();
+        player.sendMessage(plugin.fromLegacy("&eSearch has started, Please wait a moment for the results."));
         Sponge.getScheduler().createAsyncExecutor(plugin).execute(new Runnable() {
             public void run() {
                 loadedChunks.forEach(chunk -> {
