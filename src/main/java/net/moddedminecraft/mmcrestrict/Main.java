@@ -196,7 +196,7 @@ public class Main {
         loader.save(rootNode);
     }
 
-    public void checkChestItem(String itemID, String itemName) {
+    public void checkChestItem(String itemID, String itemName, String playerName) {
         boolean itemExist = false;
         final List<ItemData> items = new ArrayList<>(getItemData());
         for (ItemData item : items) {
@@ -213,6 +213,7 @@ public class Main {
                     true,
                     false
             ));
+            logToFile("ban-list", playerName + " added " +itemName+ " to the ban list");
         }
     }
 
@@ -237,6 +238,7 @@ public class Main {
                                     for (ItemData item : items) {
                                         if (item.getItemid().equals(block.getType().getId()) && item.getWorldbanned()) {
                                             blockLoc.setBlock(BlockTypes.AIR.getDefaultState(), BlockChangeFlag.ALL, Cause.of(NamedCause.owner(Sponge.getPluginManager().getPlugin("mmcrestrict").get())));
+                                            logToFile("action-log", "Removed banned block:" +item.getItemname()+ " at x:" +x+ " y:" +y+ " z:" +z);
                                         }
                                     }
                                 }
@@ -272,27 +274,29 @@ public class Main {
         }
     }
 
-    public void logToFile(String message) {
-        try {
-            if (!Files.exists(ConfigDir)) {
-                Files.createDirectory(ConfigDir);
+    public void logToFile(String filename, String message) {
+        if (Config.logToFile) {
+            try {
+                if (!Files.exists(ConfigDir.resolve("logs"))) {
+                    Files.createDirectory(ConfigDir.resolve("logs"));
+                }
+
+                Path saveTo = ConfigDir.resolve("logs/" + filename + ".txt");
+
+                if (!Files.exists(saveTo)) {
+                    Files.createFile(saveTo);
+                }
+
+                FileWriter fw = new FileWriter(saveTo.toFile(), true);
+                PrintWriter pw = new PrintWriter(fw);
+
+                pw.println(message);
+                pw.flush();
+                pw.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            Path saveTo = ConfigDir.resolve("action-log.txt");
-
-            if (!Files.exists(saveTo)) {
-                Files.createFile(saveTo);
-            }
-
-            FileWriter fw = new FileWriter(saveTo.toFile(), true);
-            PrintWriter pw = new PrintWriter(fw);
-
-            pw.println(message);
-            pw.flush();
-            pw.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
     }

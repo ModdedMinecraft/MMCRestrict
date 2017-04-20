@@ -49,15 +49,18 @@ public class Edit implements CommandExecutor {
                             switch (option) {
                                 case "name":
                                     item.setItemname(value);
+                                    plugin.logToFile("ban-list", "World for " +item.getItemname()+ " was changed to " +value);
                                     src.sendMessage(plugin.fromLegacy("&2Name set to: &6" + value));
                                     break;
                                 case "reason":
                                     item.setBanreason(value);
+                                    plugin.logToFile("ban-list", "Reason for " +item.getItemname()+ " was changed to " +value);
                                     src.sendMessage(plugin.fromLegacy("&2Reason set to: &6" + value));
                                     break;
                                 case "use":
                                     if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
                                         item.setUsagebanned(Boolean.parseBoolean(value));
+                                        plugin.logToFile("ban-list", "Usage for " +item.getItemname()+ " was changed to " +value);
                                         src.sendMessage(plugin.fromLegacy("&2Usage set to: &6" + value));
                                     } else {
                                         src.sendMessage(plugin.fromLegacy("&cInvalid value: " + value + ". Must be true or false"));
@@ -66,22 +69,16 @@ public class Edit implements CommandExecutor {
                                 case "own":
                                     if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
                                         item.setOwnershipbanned(Boolean.parseBoolean(value));
+                                        plugin.logToFile("ban-list", "Ownership for " +item.getItemname()+ " was changed to " +value);
                                         src.sendMessage(plugin.fromLegacy("&2Ownership set to: &6" + value));
                                     } else {
                                         src.sendMessage(plugin.fromLegacy("&cInvalid value: " + value + ". Must be true or false"));
                                     }
                                     break;
-                               /* case "craft":
-                                    if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
-                                        item.setCraftingbanned(Boolean.parseBoolean(value));
-                                        src.sendMessage(plugin.fromLegacy("&2Crafting set to: &6" + value));
-                                    } else {
-                                        src.sendMessage(plugin.fromLegacy("&cInvalid value: " + value + ". Must be true or false"));
-                                    }
-                                    break;*/
                                 case "world":
                                     if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
                                         item.setWorldbanned(Boolean.parseBoolean(value));
+                                        plugin.logToFile("ban-list", "World for " +item.getItemname()+ " was changed to " +value);
                                         src.sendMessage(plugin.fromLegacy("&2World set to: &6" + value));
                                     } else {
                                         src.sendMessage(plugin.fromLegacy("&cInvalid value: " + value + ". Must be true or false"));
@@ -133,10 +130,6 @@ public class Edit implements CommandExecutor {
                                     .onClick(TextActions.executeCallback(checkValue(item.getItemid(), "own")))
                                     .onHover(TextActions.showText(plugin.fromLegacy("&3Click here to change the value of &6Ownership"))).build());
 
-                            /*contents.add(Text.builder().append(plugin.fromLegacy("&6Crafting Banned: &7" + item.getCraftingbanned()))
-                                    .onClick(TextActions.executeCallback(checkValue(item.getItemid(), "craft")))
-                                    .onHover(TextActions.showText(plugin.fromLegacy("&3Click here to change the value of &6Crafting"))).build());*/
-
                             contents.add(Text.builder().append(plugin.fromLegacy("&6World Banned: &7" + item.getWorldbanned()))
                                     .onClick(TextActions.executeCallback(checkValue(item.getItemid(), "world")))
                                     .onHover(TextActions.showText(plugin.fromLegacy("&3Click here to change the value of &6World"))).build());
@@ -167,9 +160,11 @@ public class Edit implements CommandExecutor {
                         case "use":
                             if (item.getUsagebanned()) {
                                 item.setUsagebanned(false);
+                                plugin.logToFile("ban-list", "Usage for " +item.getItemname()+ " was changed to false");
                                 consumer.sendMessage(plugin.fromLegacy("&2Usage set to &6false"));
                             } else {
                                 item.setUsagebanned(true);
+                                plugin.logToFile("ban-list", "Usage for " +item.getItemname()+ " was changed to true");
                                 consumer.sendMessage(plugin.fromLegacy("&2Usage set to &6true"));
                             }
                             try {
@@ -182,9 +177,11 @@ public class Edit implements CommandExecutor {
                         case "own":
                             if (item.getOwnershipbanned()) {
                                 item.setOwnershipbanned(false);
+                                plugin.logToFile("ban-list", "Ownership for " +item.getItemname()+ " was changed to false");
                                 consumer.sendMessage(plugin.fromLegacy("&2Ownership set to &6false"));
                             } else {
                                 item.setOwnershipbanned(true);
+                                plugin.logToFile("ban-list", "Ownership for " +item.getItemname()+ " was changed to true");
                                 consumer.sendMessage(plugin.fromLegacy("&2Ownership set to &6true"));
                             }
                             try {
@@ -197,9 +194,11 @@ public class Edit implements CommandExecutor {
                         case "world":
                             if (item.getWorldbanned()) {
                                 item.setWorldbanned(false);
+                                plugin.logToFile("ban-list", "World for " +item.getItemname()+ " was changed to false");
                                 consumer.sendMessage(plugin.fromLegacy("&2World set to &6false"));
                             } else {
                                 item.setWorldbanned(true);
+                                plugin.logToFile("ban-list", "World for " +item.getItemname()+ " was changed to true");
                                 consumer.sendMessage(plugin.fromLegacy("&2World set to &6true"));
                             }
                             try {

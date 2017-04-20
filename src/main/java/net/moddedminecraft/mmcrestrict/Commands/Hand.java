@@ -67,6 +67,7 @@ public class Hand implements CommandExecutor {
                 player.sendMessage(Text.of("Data was not saved correctly."));
                 e.printStackTrace();
             }
+            plugin.logToFile("ban-list", player.getName() + " added " +mainHandItem.getTranslation().get()+ " to the ban list");
             player.sendMessage(Text.of(mainHandItem.getTranslation().get() + " was added to the list."));
         } else {
             throw new CommandException(Text.of("Main hand is empty"));

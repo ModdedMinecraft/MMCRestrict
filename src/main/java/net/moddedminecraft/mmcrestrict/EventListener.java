@@ -137,6 +137,7 @@ public class EventListener {
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
                     }
+                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
                     checkInventory(player);
                     event.setCancelled(true);
@@ -172,6 +173,7 @@ public class EventListener {
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
                     }
+                    plugin.logToFile("action-log", player.getName() + " tried to place " +item.getItemname());
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
                     checkInventory(player);
                     event.getTransactions().get(0).setValid(false);
@@ -207,6 +209,7 @@ public class EventListener {
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
                     }
+                    plugin.logToFile("action-log", player.getName() + " tried to break " +item.getItemname());
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
                     event.getTransactions().get(0).setValid(false);
                     event.setCancelled(true);
@@ -241,6 +244,7 @@ public class EventListener {
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
                     }
+                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
                     event.getTransactions().get(0).setValid(false);
                     event.setCancelled(true);
@@ -280,6 +284,7 @@ public class EventListener {
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
                     }
+                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
                     event.setCancelled(true);
                 }
@@ -310,7 +315,7 @@ public class EventListener {
 
                         String itemID = itemId;
                         String itemName = slot.peek().get().getTranslation().get();
-                        plugin.checkChestItem(itemID, itemName);
+                        plugin.checkChestItem(itemID, itemName, player.getName());
                     }
                 }
                 try {
@@ -353,6 +358,7 @@ public class EventListener {
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
                     }
+                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
                     event.setCancelled(true);
                 }
@@ -392,6 +398,7 @@ public class EventListener {
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
                     }
+                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
                     event.setCancelled(true);
                 }
@@ -432,6 +439,7 @@ public class EventListener {
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
                     }
+                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
                     event.setCancelled(true);
                 }
@@ -476,6 +484,7 @@ public class EventListener {
                             if (!item.getBanreason().isEmpty()) {
                                 reason = " &3- &7" + item.getBanreason();
                             }
+                            plugin.logToFile("action-log", item.getItemname()+ " was removed from " +player.getName()+ "'s inventory" );
                             player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() + " is banned and has been removed from your inventory" + reason));
                         }
                     }
