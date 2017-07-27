@@ -9,8 +9,8 @@ import java.util.List;
 
 public class ItemData extends ItemDataUtil {
 
-    public ItemData(String itemid, String itemname, String banreason, Boolean usagebanned, Boolean ownershipbanned, Boolean worldbanned) {
-        super(itemid, itemname, banreason, usagebanned, ownershipbanned, worldbanned);
+    public ItemData(String itemid, String itemname, String banreason, Boolean usagebanned, Boolean ownershipbanned, Boolean dropbanned, Boolean worldbanned) {
+        super(itemid, itemname, banreason, usagebanned, ownershipbanned, dropbanned, worldbanned);
     }
 
     public static class ItemDataSerializer implements TypeSerializer<ItemData> {
@@ -25,6 +25,7 @@ public class ItemData extends ItemDataUtil {
                     node.getNode("banreason").getString(),
                     node.getNode("usagebanned").getBoolean(),
                     node.getNode("ownershipbanned").getBoolean(),
+                    node.getNode("dropbanned").getBoolean(),
                     node.getNode("worldbanned").getBoolean());
         }
 
@@ -35,7 +36,7 @@ public class ItemData extends ItemDataUtil {
             node.getNode("banreason").setValue(itemdata.banreason);
             node.getNode("usagebanned").setValue(itemdata.usagebanned);
             node.getNode("ownershipbanned").setValue(itemdata.ownershipbanned);
-            //node.getNode("craftingbanned").setValue(itemdata.craftingbanned);
+            node.getNode("dropbanned").setValue(itemdata.dropbanned);
             node.getNode("worldbanned").setValue(itemdata.worldbanned);
         }
     }

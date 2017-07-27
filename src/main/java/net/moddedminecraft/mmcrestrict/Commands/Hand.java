@@ -58,6 +58,7 @@ public class Hand implements CommandExecutor {
                     "",
                     true,
                     true,
+                    false,
                     false
             ));
 

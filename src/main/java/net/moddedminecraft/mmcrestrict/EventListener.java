@@ -101,8 +101,8 @@ public class EventListener {
             }
 
             for (ItemData item : items) {
-                if (item.getItemid().equals(itemID) && item.getOwnershipbanned()) {
-                    if (plugin.checkPerm(player, "own", itemID)) {
+                if (item.getItemid().equals(itemID) && item.getDropbanned()) {
+                    if (plugin.checkPerm(player, "drop", itemID)) {
                         checkInventory(player);
                         event.setCancelled(true);
                     }
@@ -145,7 +145,6 @@ public class EventListener {
             }
         }
     }
-
 
     @Listener
     public void onBlockPlace(ChangeBlockEvent.Place event, @Root Player player) {
@@ -459,7 +458,6 @@ public class EventListener {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-
         final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         for (Inventory s : player.getInventory().slots()) {
             if (s.peek().isPresent()) {
@@ -479,7 +477,9 @@ public class EventListener {
                 for (ItemData item : items) {
                     if (item.getItemid().equals(itemID) && item.getOwnershipbanned()) {
                         if (plugin.checkPerm(player, "own", itemID)) {
+                            ItemStack dirt = ItemStack.builder().itemType(ItemTypes.DIRT).build();
                             s.clear();
+                            //s.set(dirt);
                             String reason = "";
                             if (!item.getBanreason().isEmpty()) {
                                 reason = " &3- &7" + item.getBanreason();

@@ -11,6 +11,7 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.slf4j.Logger;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
@@ -43,10 +44,11 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.1.0", description = "A simple item restriction plugin", authors = {"Leelawd93"})
+@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.2.1", description = "A simple item restriction plugin", authors = {"Leelawd93"})
 public class Main {
 
     private static Main instance;
+    private Game game;
 
     @Inject
     private Logger logger;
@@ -127,6 +129,7 @@ public class Main {
                 put("reason", "reason");
                 put("use", "use");
                 put("own", "own");
+                put("drop", "drop");
                 put("name", "name");
                 put("world", "world");
             }
@@ -211,6 +214,7 @@ public class Main {
                     "",
                     true,
                     true,
+                    false,
                     false
             ));
             logToFile("ban-list", playerName + " added " +itemName+ " to the ban list");

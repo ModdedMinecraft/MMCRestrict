@@ -84,6 +84,15 @@ public class Edit implements CommandExecutor {
                                         src.sendMessage(plugin.fromLegacy("&cInvalid value: " + value + ". Must be true or false"));
                                     }
                                     break;
+                                case "drop":
+                                    if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+                                        item.setDropbanned(Boolean.parseBoolean(value));
+                                        plugin.logToFile("ban-list", "Drop for " +item.getItemname()+ " was changed to " +value);
+                                        src.sendMessage(plugin.fromLegacy("&2Drop set to: &6" + value));
+                                    } else {
+                                        src.sendMessage(plugin.fromLegacy("&cInvalid value: " + value + ". Must be true or false"));
+                                    }
+                                    break;
 
                                 default:
                                     throw new CommandException(plugin.fromLegacy("&cInvalid usage: /restrict edit ItemID [Option] [Value]"));
@@ -129,6 +138,10 @@ public class Edit implements CommandExecutor {
                             contents.add(Text.builder().append(plugin.fromLegacy("&6Ownership Banned: &7" + item.getOwnershipbanned()))
                                     .onClick(TextActions.executeCallback(checkValue(item.getItemid(), "own")))
                                     .onHover(TextActions.showText(plugin.fromLegacy("&3Click here to change the value of &6Ownership"))).build());
+
+                            contents.add(Text.builder().append(plugin.fromLegacy("&6Drop Banned: &7" + item.getDropbanned()))
+                                    .onClick(TextActions.executeCallback(checkValue(item.getItemid(), "drop")))
+                                    .onHover(TextActions.showText(plugin.fromLegacy("&3Click here to change the value of &6Drop"))).build());
 
                             contents.add(Text.builder().append(plugin.fromLegacy("&6World Banned: &7" + item.getWorldbanned()))
                                     .onClick(TextActions.executeCallback(checkValue(item.getItemid(), "world")))
@@ -200,6 +213,23 @@ public class Edit implements CommandExecutor {
                                 item.setWorldbanned(true);
                                 plugin.logToFile("ban-list", "World for " +item.getItemname()+ " was changed to true");
                                 consumer.sendMessage(plugin.fromLegacy("&2World set to &6true"));
+                            }
+                            try {
+                                plugin.saveData();
+                            } catch (Exception e) {
+                                consumer.sendMessage(Text.of("Data was not saved correctly."));
+                                e.printStackTrace();
+                            }
+                            break;
+                        case "drop":
+                            if (item.getWorldbanned()) {
+                                item.setDropbanned(false);
+                                plugin.logToFile("ban-list", "Drop for " +item.getItemname()+ " was changed to false");
+                                consumer.sendMessage(plugin.fromLegacy("&2Drop set to &6false"));
+                            } else {
+                                item.setDropbanned(true);
+                                plugin.logToFile("ban-list", "Drop for " +item.getItemname()+ " was changed to true");
+                                consumer.sendMessage(plugin.fromLegacy("&2Drop set to &6true"));
                             }
                             try {
                                 plugin.saveData();
