@@ -247,7 +247,7 @@ public class Main {
                                             Sponge.getScheduler().createTaskBuilder().execute(() -> {
                                                 blockLoc.setBlock(BlockTypes.AIR.getDefaultState(), BlockChangeFlag.ALL, Cause.of(NamedCause.owner(Sponge.getPluginManager().getPlugin("mmcrestrict").get())));
                                                 logToFile("action-log", "Removed banned block:" +item.getItemname()+ " at x:" + finalX + " y:" + finalY + " z:" + finalZ);
-                                            }).submit(this);
+                                            }).submit(Sponge.getPluginManager().getPlugin("mmcrestrict").get().getInstance().get());
                                         }
                                     }
                                 }
