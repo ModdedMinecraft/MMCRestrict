@@ -241,8 +241,13 @@ public class Main {
                                     Location blockLoc = chunk.getLocation(x, y, z);
                                     for (ItemData item : items) {
                                         if (item.getItemid().equals(block.getType().getId()) && item.getWorldbanned()) {
-                                            blockLoc.setBlock(BlockTypes.AIR.getDefaultState(), BlockChangeFlag.ALL, Cause.of(NamedCause.owner(Sponge.getPluginManager().getPlugin("mmcrestrict").get())));
-                                            logToFile("action-log", "Removed banned block:" +item.getItemname()+ " at x:" +x+ " y:" +y+ " z:" +z);
+                                            int finalX = x;
+                                            int finalY = y;
+                                            int finalZ = z;
+                                            Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                                                blockLoc.setBlock(BlockTypes.AIR.getDefaultState(), BlockChangeFlag.ALL, Cause.of(NamedCause.owner(Sponge.getPluginManager().getPlugin("mmcrestrict").get())));
+                                                logToFile("action-log", "Removed banned block:" +item.getItemname()+ " at x:" + finalX + " y:" + finalY + " z:" + finalZ);
+                                            }).submit(this);
                                         }
                                     }
                                 }
