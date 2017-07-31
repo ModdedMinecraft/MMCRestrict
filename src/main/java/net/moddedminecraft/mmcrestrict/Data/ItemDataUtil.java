@@ -2,15 +2,17 @@ package net.moddedminecraft.mmcrestrict.Data;
 
 public class ItemDataUtil {
 
-    protected String itemname, itemid, banreason;
-    protected Boolean usagebanned, ownershipbanned, dropbanned, worldbanned;
+    protected String itemid, itemname, banreason;
+    protected Boolean ownershipbanned, usagebanned, breakingbanned, placingbanned, dropbanned, worldbanned;
 
-    public ItemDataUtil(String itemid, String itemname, String banreason, Boolean usagebanned, Boolean ownershipbanned, Boolean dropbanned, Boolean worldbanned) {
+    public ItemDataUtil(String itemid, String itemname, String banreason, Boolean usagebanned, Boolean breakingbanned, Boolean placingbanned, Boolean ownershipbanned, Boolean dropbanned, Boolean worldbanned) {
         this.itemid = itemid;
         this.itemname = itemname;
         this.banreason = banreason;
-        this.usagebanned = usagebanned;
         this.ownershipbanned = ownershipbanned;
+        this.usagebanned = usagebanned;
+        this.breakingbanned = breakingbanned;
+        this.placingbanned = placingbanned;
         this.dropbanned = dropbanned;
         this.worldbanned = worldbanned;
     }
@@ -35,6 +37,18 @@ public class ItemDataUtil {
         return usagebanned;
     }
 
+    public Boolean getBreakingbanned() {
+        return breakingbanned;
+    }
+
+    public Boolean getPlacingbanned() {
+        return placingbanned;
+    }
+
+    public Boolean getDropbanned() {
+        return dropbanned;
+    }
+
     public Boolean getWorldbanned() {
         return worldbanned;
     }
@@ -55,15 +69,20 @@ public class ItemDataUtil {
         this.usagebanned = usagebanned;
     }
 
-    public void setWorldbanned(Boolean worldbanned) {
-        this.worldbanned = worldbanned;
+    public void setBreakingbanned(Boolean breakingbanned) {
+        this.breakingbanned = breakingbanned;
     }
 
-    public Boolean getDropbanned() {
-        return dropbanned;
+    public void setPlacingbanned(Boolean placingbanned) {
+        this.placingbanned = placingbanned;
     }
 
     public void setDropbanned(Boolean dropbanned) {
         this.dropbanned = dropbanned;
     }
+
+    public void setWorldbanned(Boolean worldbanned) {
+        this.worldbanned = worldbanned;
+    }
+
 }
