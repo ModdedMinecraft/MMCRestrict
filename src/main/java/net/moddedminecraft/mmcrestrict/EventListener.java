@@ -166,8 +166,8 @@ public class EventListener {
         }
 
         for (ItemData item : items) {
-            if (item.getItemid().equals(itemID) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemID)) {
+            if (item.getItemid().equals(itemID) && item.getPlacingbanned()) {
+                if (plugin.checkPerm(player, "place", itemID)) {
                     String reason = "";
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();
@@ -202,8 +202,8 @@ public class EventListener {
         }
 
         for (ItemData item : items) {
-            if (item.getItemid().equals(itemID) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemID)) {
+            if (item.getItemid().equals(itemID) && item.getBreakingbanned()) {
+                if (plugin.checkPerm(player, "break", itemID)) {
                     String reason = "";
                     if (!item.getBanreason().isEmpty()) {
                         reason = " &3- &7" +item.getBanreason();

@@ -57,6 +57,8 @@ public class Hand implements CommandExecutor {
                     mainHandItem.getTranslation().get(),
                     "",
                     true,
+                    false,
+                    false,
                     true,
                     false,
                     false

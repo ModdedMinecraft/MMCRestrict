@@ -38,6 +38,8 @@ public class BanList implements CommandExecutor {
             if (src.hasPermission(Permissions.LIST_EXTRA) && src.hasPermission(Permissions.EDIT_BANNED_ITEM)) {
                 send.onHover(TextActions.showText(plugin.fromLegacy(
                         "&cBanned methods &7- &6Use&7: " + item.getUsagebanned() +
+                                " &6Break&7: " + item.getBreakingbanned() +
+                                " &6Place&7: " + item.getPlacingbanned() +
                                 " &6Own&7: " + item.getOwnershipbanned() +
                                 " &6World&7: " + item.getWorldbanned() + ""
                                 + "\n&7Id: " + item.getItemid()
@@ -47,6 +49,8 @@ public class BanList implements CommandExecutor {
             } else if (src.hasPermission(Permissions.LIST_EXTRA) && !src.hasPermission(Permissions.EDIT_BANNED_ITEM)) {
                 send.onHover(TextActions.showText(plugin.fromLegacy(
                         "&cBanned methods &7- &6Use&7: " + item.getUsagebanned() +
+                                " &6Break&7: " + item.getBreakingbanned() +
+                                " &6Place&7: " + item.getPlacingbanned() +
                                 " &6Own&7: " + item.getOwnershipbanned() +
                                 " &6World&7: " + item.getWorldbanned()
                                 + "\n&7Id: " + item.getItemid()
@@ -54,6 +58,8 @@ public class BanList implements CommandExecutor {
             } else {
                 send.onHover(TextActions.showText(plugin.fromLegacy(
                         "&cBanned methods &7- &6Use&7: " + item.getUsagebanned() +
+                                " &6Break&7: " + item.getBreakingbanned() +
+                                " &6Place&7: " + item.getPlacingbanned() +
                                 " &6Own&7: " + item.getOwnershipbanned() +
                                 " &6World&7: " + item.getWorldbanned()
                 )));

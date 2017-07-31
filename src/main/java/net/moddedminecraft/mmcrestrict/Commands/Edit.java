@@ -75,6 +75,24 @@ public class Edit implements CommandExecutor {
                                         src.sendMessage(plugin.fromLegacy("&cInvalid value: " + value + ". Must be true or false"));
                                     }
                                     break;
+                                case "break":
+                                    if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+                                        item.setBreakingbanned(Boolean.parseBoolean(value));
+                                        plugin.logToFile("ban-list", "Breaking for " +item.getItemname()+ " was changed to " +value);
+                                        src.sendMessage(plugin.fromLegacy("&2Breaking set to: &6" + value));
+                                    } else {
+                                        src.sendMessage(plugin.fromLegacy("&cInvalid value: " + value + ". Must be true or false"));
+                                    }
+                                    break;
+                                case "place":
+                                    if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+                                        item.setPlacingbanned(Boolean.parseBoolean(value));
+                                        plugin.logToFile("ban-list", "Placing for " +item.getItemname()+ " was changed to " +value);
+                                        src.sendMessage(plugin.fromLegacy("&2Placing set to: &6" + value));
+                                    } else {
+                                        src.sendMessage(plugin.fromLegacy("&cInvalid value: " + value + ". Must be true or false"));
+                                    }
+                                    break;
                                 case "world":
                                     if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
                                         item.setWorldbanned(Boolean.parseBoolean(value));
@@ -135,6 +153,14 @@ public class Edit implements CommandExecutor {
                                     .onClick(TextActions.executeCallback(checkValue(item.getItemid(), "use")))
                                     .onHover(TextActions.showText(plugin.fromLegacy("&3Click here to change the value of &6Usage"))).build());
 
+                            contents.add(Text.builder().append(plugin.fromLegacy("&6Breaking Banned: &7" + item.getBreakingbanned()))
+                                    .onClick(TextActions.executeCallback(checkValue(item.getItemid(), "break")))
+                                    .onHover(TextActions.showText(plugin.fromLegacy("&3Click here to change the value of &6Breaking"))).build());
+
+                            contents.add(Text.builder().append(plugin.fromLegacy("&6Placing Banned: &7" + item.getPlacingbanned()))
+                                    .onClick(TextActions.executeCallback(checkValue(item.getItemid(), "place")))
+                                    .onHover(TextActions.showText(plugin.fromLegacy("&3Click here to change the value of &6Placing"))).build());
+
                             contents.add(Text.builder().append(plugin.fromLegacy("&6Ownership Banned: &7" + item.getOwnershipbanned()))
                                     .onClick(TextActions.executeCallback(checkValue(item.getItemid(), "own")))
                                     .onHover(TextActions.showText(plugin.fromLegacy("&3Click here to change the value of &6Ownership"))).build());
@@ -178,6 +204,40 @@ public class Edit implements CommandExecutor {
                             } else {
                                 item.setUsagebanned(true);
                                 plugin.logToFile("ban-list", "Usage for " +item.getItemname()+ " was changed to true");
+                                consumer.sendMessage(plugin.fromLegacy("&2Usage set to &6true"));
+                            }
+                            try {
+                                plugin.saveData();
+                            } catch (Exception e) {
+                                consumer.sendMessage(Text.of("Data was not saved correctly."));
+                                e.printStackTrace();
+                            }
+                            break;
+                        case "break":
+                            if (item.getBreakingbanned()) {
+                                item.setBreakingbanned(false);
+                                plugin.logToFile("ban-list", "Breaking for " +item.getItemname()+ " was changed to false");
+                                consumer.sendMessage(plugin.fromLegacy("&2Breaking set to &6false"));
+                            } else {
+                                item.setBreakingbanned(true);
+                                plugin.logToFile("ban-list", "Breaking for " +item.getItemname()+ " was changed to true");
+                                consumer.sendMessage(plugin.fromLegacy("&2Breaking set to &6true"));
+                            }
+                            try {
+                                plugin.saveData();
+                            } catch (Exception e) {
+                                consumer.sendMessage(Text.of("Data was not saved correctly."));
+                                e.printStackTrace();
+                            }
+                            break;
+                        case "place":
+                            if (item.getPlacingbanned()) {
+                                item.setPlacingbanned(false);
+                                plugin.logToFile("ban-list", "Placing for " +item.getItemname()+ " was changed to false");
+                                consumer.sendMessage(plugin.fromLegacy("&2Placing set to &6false"));
+                            } else {
+                                item.setPlacingbanned(true);
+                                plugin.logToFile("ban-list", "Placing for " +item.getItemname()+ " was changed to true");
                                 consumer.sendMessage(plugin.fromLegacy("&2Usage set to &6true"));
                             }
                             try {

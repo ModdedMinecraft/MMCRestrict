@@ -128,6 +128,8 @@ public class Main {
             {
                 put("reason", "reason");
                 put("use", "use");
+                put("break", "break");
+                put("place", "place");
                 put("own", "own");
                 put("drop", "drop");
                 put("name", "name");
@@ -135,7 +137,7 @@ public class Main {
             }
         };
 
-        // /restrict edit itemID [reason/use/own/craft/world] [true/false/reason]
+        // /restrict edit itemID [reason/use/break/place/own/craft/world] [true/false/reason]
         CommandSpec itemEdit = CommandSpec.builder()
                 .description(Text.of("Edit values on a banned item"))
                 .executor(new Edit(this))
@@ -213,6 +215,8 @@ public class Main {
                     itemName,
                     "",
                     true,
+                    false,
+                    false,
                     true,
                     false,
                     false
