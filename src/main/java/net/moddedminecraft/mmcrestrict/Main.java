@@ -23,7 +23,6 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
@@ -44,7 +43,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.3.0", description = "A simple item restriction plugin", authors = {"Leelawd93"})
+@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.3.1", description = "A simple item restriction plugin", authors = {"Leelawd93"})
 public class Main {
 
     private static Main instance;
@@ -249,7 +248,7 @@ public class Main {
                                             int finalY = y;
                                             int finalZ = z;
                                             Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                                                blockLoc.setBlock(BlockTypes.AIR.getDefaultState(), BlockChangeFlag.ALL, Cause.of(NamedCause.owner(Sponge.getPluginManager().getPlugin("mmcrestrict").get())));
+                                                blockLoc.setBlock(BlockTypes.AIR.getDefaultState(), BlockChangeFlag.ALL);
                                                 logToFile("action-log", "Removed banned block:" +item.getItemname()+ " at x:" + finalX + " y:" + finalY + " z:" + finalZ);
                                             }).submit(Sponge.getPluginManager().getPlugin("mmcrestrict").get().getInstance().get());
                                         }
