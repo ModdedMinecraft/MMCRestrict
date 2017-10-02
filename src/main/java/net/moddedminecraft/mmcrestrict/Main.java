@@ -22,7 +22,6 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
@@ -41,7 +40,6 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.3.1", description = "A simple item restriction plugin", authors = {"Leelawd93"})
 public class Main {
@@ -83,8 +81,6 @@ public class Main {
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-
-        Sponge.getScheduler().createTaskBuilder().execute(this::checkLoadedChunks).delay(1, TimeUnit.MINUTES).interval(1, TimeUnit.MINUTES).name("mmcreboot-s-checkLoadedChunks").submit(this);
 
         logger.info("Banned items loaded: " + items.size());
         logger.info("MMCRestrict Loaded");
@@ -160,6 +156,13 @@ public class Main {
                 .permission(Permissions.WHATS_THIS)
                 .build();
 
+        // /restrict checkchunks
+        CommandSpec checkChunks = CommandSpec.builder()
+                .description(Text.of("Search loaded chunks for banned blocks"))
+                .executor(new CheckChunks(this))
+                .permission(Permissions.CHECK_CHUNKS)
+                .build();
+
         // /restrict
         CommandSpec restrict = CommandSpec.builder()
                 .description(Text.of("Base restrict command"))
@@ -170,6 +173,7 @@ public class Main {
                 .child(bannedList, "list")
                 .child(itemSearch, "search")
                 .child(whatsThis, "whatsthis")
+                .child(checkChunks, "checkchunks")
                 .build();
 
         cmdManager.register(this, bannedList, "banneditems");
@@ -225,9 +229,6 @@ public class Main {
     }
 
     public void checkLoadedChunks() {
-        if (!Config.worldBanEnabled) {
-            return;
-        }
         Collection<World> loadedWorlds = Sponge.getServer().getWorlds();
         final java.util.List<ItemData> items = new ArrayList<ItemData>(getItemData());
         Sponge.getScheduler().createAsyncExecutor(this).execute(new Runnable() {
