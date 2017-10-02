@@ -13,5 +13,6 @@ public class Permissions {
     public static final String ADD_BANNED_ITEM = "mmcrestrict.commands.add";
     public static final String SEARCH_BANNED_ITEM = "mmcrestrict.commands.search";
     public static final String WHATS_THIS = "mmcrestrict.commands.whatsthis";
+    public static final String CHECK_CHUNKS = "mmcrestrict.commands.checkchunks";
 
 }
