@@ -29,7 +29,6 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
-import org.spongepowered.api.world.BlockChangeFlag;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -41,7 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.3.1", description = "A simple item restriction plugin", authors = {"Leelawd93"})
+@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.4.0", description = "A simple item restriction plugin", authors = {"Leelawd93"})
 public class Main {
 
     private static Main instance;
@@ -163,6 +162,14 @@ public class Main {
                 .permission(Permissions.CHECK_CHUNKS)
                 .build();
 
+        // /restrict sendtochest
+        CommandSpec sendToChest = CommandSpec.builder()
+                .description(Text.of("Search loaded chunks for a block and put it in a chest"))
+                .executor(new Sendtochest(this))
+                .arguments(GenericArguments.catalogedElement(Text.of("ItemID"), ItemType.class))
+                .permission(Permissions.SEND_TO_CHEST)
+                .build();
+
         // /restrict
         CommandSpec restrict = CommandSpec.builder()
                 .description(Text.of("Base restrict command"))
@@ -174,6 +181,7 @@ public class Main {
                 .child(itemSearch, "search")
                 .child(whatsThis, "whatsthis")
                 .child(checkChunks, "checkchunks")
+                .child(sendToChest, "sendtochest")
                 .build();
 
         cmdManager.register(this, bannedList, "banneditems");
@@ -249,7 +257,7 @@ public class Main {
                                             int finalY = y;
                                             int finalZ = z;
                                             Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                                                blockLoc.setBlock(BlockTypes.AIR.getDefaultState(), BlockChangeFlag.ALL);
+                                                blockLoc.setBlock(BlockTypes.AIR.getDefaultState());
                                                 logToFile("action-log", "Removed banned block:" +item.getItemname()+ " at x:" + finalX + " y:" + finalY + " z:" + finalZ);
                                             }).submit(Sponge.getPluginManager().getPlugin("mmcrestrict").get().getInstance().get());
                                         }
