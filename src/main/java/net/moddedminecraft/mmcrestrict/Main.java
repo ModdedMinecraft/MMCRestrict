@@ -43,7 +43,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.3.2", description = "A simple item restriction plugin", authors = {"Leelawd93"})
+@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.4.0-API5", description = "A simple item restriction plugin", authors = {"Leelawd93"})
 public class Main {
 
     private static Main instance;
@@ -161,9 +161,17 @@ public class Main {
         // /restrict checkchunks
                 CommandSpec checkChunks = CommandSpec.builder()
                                 .description(Text.of("Search loaded chunks for banned blocks"))
-                                .executor(new CheckChunks(this))
-                                .permission(Permissions.CHECK_CHUNKS)
-                                .build();
+                        .executor(new CheckChunks(this))
+                        .permission(Permissions.CHECK_CHUNKS)
+                        .build();
+
+        // /restrict sendtochest
+        CommandSpec sendToChest = CommandSpec.builder()
+                .description(Text.of("Search loaded chunks for a block and put it in a chest"))
+                .executor(new Sendtochest(this))
+                .arguments(GenericArguments.catalogedElement(Text.of("ItemID"), ItemType.class))
+                .permission(Permissions.SEND_TO_CHEST)
+                .build();
 
         // /restrict
         CommandSpec restrict = CommandSpec.builder()
@@ -176,6 +184,7 @@ public class Main {
                 .child(itemSearch, "search")
                 .child(whatsThis, "whatsthis")
                 .child(checkChunks, "checkchunks")
+                .child(sendToChest, "sendtochest")
                 .build();
 
         cmdManager.register(this, bannedList, "banneditems");
