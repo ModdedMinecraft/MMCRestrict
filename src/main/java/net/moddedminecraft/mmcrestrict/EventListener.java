@@ -49,9 +49,9 @@ public class EventListener {
 
         for (SlotTransaction transaction : event.getTransactions()) {
             ItemStack itemStack = transaction.getFinal().createStack();
-            String itemID = itemStack.getItem().getId();
+            String itemID = itemStack.getType().getId();
 
-            if (itemStack.getItem().equals(ItemTypes.NONE)) {
+            if (itemStack.getType().equals(ItemTypes.NONE)) {
                 continue;
             }
 
@@ -87,7 +87,12 @@ public class EventListener {
         List<ItemStackSnapshot> itemIDs = event.getDroppedItems();
 
         for (ItemStackSnapshot itemSnapshot : itemIDs) {
+            ItemStack itemStack = itemSnapshot.createStack();
             String itemID = itemSnapshot.getType().getId();
+
+            if (itemStack.getType().equals(ItemTypes.NONE)) {
+                continue;
+            }
 
             DataContainer container = itemSnapshot.toContainer();
             DataQuery query = DataQuery.of('/', "UnsafeDamage");
@@ -148,6 +153,9 @@ public class EventListener {
 
     @Listener
     public void onBlockPlace(ChangeBlockEvent.Place event, @Root Player player) {
+        if (event.getTransactions().get(0).getFinal().getState().getType().equals(BlockTypes.AIR)) {
+            return;
+        }
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
@@ -184,6 +192,9 @@ public class EventListener {
 
     @Listener
     public void onBlockBreak(ChangeBlockEvent.Break event, @Root Player player) {
+        if (event.getTransactions().get(0).getFinal().getState().getType().equals(BlockTypes.AIR)) {
+            return;
+        }
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
@@ -219,6 +230,9 @@ public class EventListener {
 
     @Listener
     public void onBlockModify(ChangeBlockEvent.Modify event, @Root Player player) {
+        if (event.getTransactions().get(0).getFinal().getState().getType().equals(BlockTypes.AIR)) {
+            return;
+        }
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
