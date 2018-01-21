@@ -238,7 +238,7 @@ public class Edit implements CommandExecutor {
                             } else {
                                 item.setPlacingbanned(true);
                                 plugin.logToFile("ban-list", "Placing for " +item.getItemname()+ " was changed to true");
-                                consumer.sendMessage(plugin.fromLegacy("&2Usage set to &6true"));
+                                consumer.sendMessage(plugin.fromLegacy("&2Placing set to &6true"));
                             }
                             try {
                                 plugin.saveData();
