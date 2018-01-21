@@ -37,8 +37,8 @@ public class ItemData extends ItemDataUtil {
             node.getNode("itemname").setValue(itemdata.itemname);
             node.getNode("banreason").setValue(itemdata.banreason);
             node.getNode("usagebanned").setValue(itemdata.usagebanned);
-            node.getNode("breakingbanned").setValue(itemdata.usagebanned);
-            node.getNode("placingbanned").setValue(itemdata.usagebanned);
+            node.getNode("breakingbanned").setValue(itemdata.breakingbanned);
+            node.getNode("placingbanned").setValue(itemdata.placingbanned);
             node.getNode("ownershipbanned").setValue(itemdata.ownershipbanned);
             node.getNode("dropbanned").setValue(itemdata.dropbanned);
             node.getNode("worldbanned").setValue(itemdata.worldbanned);
