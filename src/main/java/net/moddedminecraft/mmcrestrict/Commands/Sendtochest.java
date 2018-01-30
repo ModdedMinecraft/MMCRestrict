@@ -14,12 +14,10 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.type.TileEntityInventory;
-import org.spongepowered.api.world.BlockChangeFlag;
+import org.spongepowered.api.world.BlockChangeFlags;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.Location;
 
@@ -66,7 +64,7 @@ public class Sendtochest implements CommandExecutor {
                                 if (block.getType().getId().equals(itemType.getId())) {
                                     Sponge.getScheduler().createTaskBuilder().execute(() -> {
                                         BlockSnapshot blockSnap = blockLoc.createSnapshot();
-                                        blockLoc.setBlock(BlockTypes.CHEST.getDefaultState(), BlockChangeFlag.ALL, Cause.of(NamedCause.owner(Sponge.getPluginManager().getPlugin("mmcrestrict").get())));
+                                        blockLoc.setBlock(BlockTypes.CHEST.getDefaultState(), BlockChangeFlags.ALL);
                                         TileEntity chest = (TileEntity) blockLoc.getTileEntity().get();
                                         TileEntityInventory inventory = (TileEntityInventory) chest;
                                         inventory.offer(ItemStack.builder().fromBlockSnapshot(blockSnap).build());

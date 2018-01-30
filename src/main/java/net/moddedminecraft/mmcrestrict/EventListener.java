@@ -49,9 +49,9 @@ public class EventListener {
 
         for (SlotTransaction transaction : event.getTransactions()) {
             ItemStack itemStack = transaction.getFinal().createStack();
-            String itemID = itemStack.getItem().getId();
+            String itemID = itemStack.getType().getId();
 
-            if (itemStack.getItem().equals(ItemTypes.NONE)) {
+            if (itemStack.getType().equals(ItemTypes.NONE)) {
                 continue;
             }
 
@@ -90,7 +90,7 @@ public class EventListener {
             ItemStack itemStack = itemSnapshot.createStack();
             String itemID = itemSnapshot.getType().getId();
 
-            if (itemStack.getItem().equals(ItemTypes.NONE)) {
+            if (itemStack.getType().equals(ItemTypes.NONE)) {
                 continue;
             }
 
