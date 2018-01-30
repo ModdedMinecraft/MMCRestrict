@@ -1,5 +1,6 @@
 package net.moddedminecraft.mmcrestrict.Commands;
 
+import net.moddedminecraft.mmcrestrict.Config;
 import net.moddedminecraft.mmcrestrict.Data.ItemData;
 import net.moddedminecraft.mmcrestrict.Main;
 import org.spongepowered.api.command.CommandException;
@@ -55,13 +56,13 @@ public class Hand implements CommandExecutor {
             plugin.addItem(new ItemData(
                     itemId,
                     mainHandItem.getTranslation().get(),
-                    "",
-                    true,
-                    false,
-                    false,
-                    true,
-                    false,
-                    false
+                    Config.defaultReason,
+                    Config.defaultUsage,
+                    Config.defaultBreaking,
+                    Config.defaultPlacing,
+                    Config.defaultOwnership,
+                    Config.defaultDrop,
+                    Config.defaultWorld
             ));
 
             try {
