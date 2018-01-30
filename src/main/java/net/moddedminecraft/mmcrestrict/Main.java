@@ -227,13 +227,13 @@ public class Main {
             addItem(new ItemData(
                     itemID,
                     itemName,
-                    "",
-                    true,
-                    false,
-                    false,
-                    true,
-                    false,
-                    false
+                    Config.defaultReason,
+                    Config.defaultUsage,
+                    Config.defaultBreaking,
+                    Config.defaultPlacing,
+                    Config.defaultOwnership,
+                    Config.defaultDrop,
+                    Config.defaultWorld
             ));
             logToFile("ban-list", playerName + " added " +itemName+ " to the ban list");
         }
