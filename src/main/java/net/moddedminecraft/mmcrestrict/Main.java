@@ -40,7 +40,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.4.1", description = "A simple item restriction plugin", authors = {"Leelawd93"})
 public class Main {
 
     private static Main instance;
@@ -288,7 +287,7 @@ public class Main {
     }
 
     public boolean checkPerm(CommandSource src, String banType, String itemID) {
-        if (!src.hasPermission(Permissions.ITEM_BYPASS + "." + banType + "." + itemID)) {
+        if (!src.hasPermission(Permissions.ITEM_BYPASS + "." + banType + "." + itemID.replace(":", "."))) {
             return true;
         } else {
             return false;
