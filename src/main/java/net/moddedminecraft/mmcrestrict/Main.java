@@ -291,7 +291,7 @@ public class Main {
     }
 
     public boolean checkPerm(CommandSource src, String banType, String itemID) {
-        if (!src.hasPermission(Permissions.ITEM_BYPASS + "." + banType + "." + itemID)) {
+        if (!src.hasPermission(Permissions.ITEM_BYPASS + "." + banType + "." + itemID.replace(":", "."))) {
             return true;
         } else {
             return false;
