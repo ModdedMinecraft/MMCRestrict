@@ -43,7 +43,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.4.1-API5", description = "A simple item restriction plugin", authors = {"Leelawd93"})
+@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.4.2-API5", description = "A simple item restriction plugin", authors = {"Leelawd93"})
 public class Main {
 
     private static Main instance;
