@@ -38,7 +38,7 @@ public class Hand implements CommandExecutor {
 
             if (!items.isEmpty()) {
                 for (ItemData item : items) {
-                    if (item.getItemid().equals(mainHandItem.getItem().getId())) {
+                    if (item.getItemid().equals(mainHandItem.getType().getId())) {
                         throw new CommandException(Text.of("Item already exists"));
                     }
                 }
@@ -48,7 +48,7 @@ public class Hand implements CommandExecutor {
             DataQuery query = DataQuery.of('/', "UnsafeDamage");
 
             int unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-            String itemId = mainHandItem.getItem().getId();
+            String itemId = mainHandItem.getType().getId();
             if (unsafeDamage != 0) {
                 itemId = itemId + ":" + unsafeDamage;
             }

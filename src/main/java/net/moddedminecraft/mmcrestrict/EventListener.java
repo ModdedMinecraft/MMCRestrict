@@ -309,7 +309,7 @@ public class EventListener {
     public void onRightClick(InteractBlockEvent.Secondary.MainHand event, @Root Player player) {
         boolean sneaking = player.get(Keys.IS_SNEAKING).orElse(false);
         if (player.hasPermission(Permissions.ADD_BANNED_ITEM) && event.getTargetBlock().getState().getType().equals(BlockTypes.CHEST) && sneaking) {
-            if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent() && player.getItemInHand(HandTypes.MAIN_HAND).get().getItem().getType().equals(ItemTypes.FLINT)) {
+            if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent() && player.getItemInHand(HandTypes.MAIN_HAND).get().getType().getType().equals(ItemTypes.FLINT)) {
 
                 TileEntityCarrier chest = (TileEntityCarrier) event.getTargetBlock().getLocation().get().getTileEntity().get();
                 for (Inventory slot : chest.getInventory().slots()) {
@@ -321,7 +321,7 @@ public class EventListener {
                         if (container.get(query).isPresent()) {
                             unsafeDamage = Integer.parseInt(container.get(query).get().toString());
                         }
-                        String itemId = slot.peek().get().getItem().getId();
+                        String itemId = slot.peek().get().getType().getId();
                         if (unsafeDamage != 0) {
                             itemId = itemId + ":" + unsafeDamage;
                         }
@@ -476,7 +476,7 @@ public class EventListener {
         for (Inventory s : player.getInventory().slots()) {
             if (s.peek().isPresent()) {
                 ItemStack itemStack = s.peek().get();
-                String itemID = itemStack.getItem().getId();
+                String itemID = itemStack.getType().getId();
 
                 DataContainer container = s.peek().get().toContainer();
                 DataQuery query = DataQuery.of('/', "UnsafeDamage");
