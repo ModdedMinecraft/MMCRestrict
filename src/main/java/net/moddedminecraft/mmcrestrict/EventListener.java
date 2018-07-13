@@ -13,7 +13,6 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.filter.cause.Root;
-import org.spongepowered.api.event.item.inventory.AffectSlotEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.CraftItemEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
@@ -46,34 +45,16 @@ public class EventListener {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
 
         for (SlotTransaction transaction : event.getTransactions()) {
             ItemStack itemStack = transaction.getFinal().createStack();
-            String itemID = itemStack.getType().getId();
 
             if (itemStack.getType().equals(ItemTypes.NONE)) {
                 continue;
             }
 
-            DataContainer container = itemStack.toContainer();
-            DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-            int unsafeDamage = 0;
-            if (container.get(query).isPresent()) {
-                unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-            }
-            if (unsafeDamage != 0) {
-                itemID = itemID + ":" + unsafeDamage;
-            }
-
-            for (ItemData item : items) {
-                if (item.getItemid().equals(itemID) && item.getOwnershipbanned()) {
-                    if (plugin.checkPerm(player, "own", itemID)) {
-                        checkInventory(player);
-                        event.setCancelled(true);
-                    }
-                }
+            if (checkBanned(itemStack, "own", player)) {
+                event.setCancelled(true);
             }
         }
 
@@ -84,35 +65,17 @@ public class EventListener {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         List<ItemStackSnapshot> itemIDs = event.getDroppedItems();
 
         for (ItemStackSnapshot itemSnapshot : itemIDs) {
             ItemStack itemStack = itemSnapshot.createStack();
-            String itemID = itemSnapshot.getType().getId();
 
             if (itemStack.getType().equals(ItemTypes.NONE)) {
                 continue;
             }
 
-            DataContainer container = itemSnapshot.toContainer();
-            DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-            int unsafeDamage = 0;
-            if (container.get(query).isPresent()) {
-                unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-            }
-            if (unsafeDamage != 0) {
-                itemID = itemID + ":" + unsafeDamage;
-            }
-
-            for (ItemData item : items) {
-                if (item.getItemid().equals(itemID) && item.getDropbanned()) {
-                    if (plugin.checkPerm(player, "drop", itemID)) {
-                        checkInventory(player);
-                        event.setCancelled(true);
-                    }
-                }
+            if (checkBanned(itemStack, "drop", player)) {
+                event.setCancelled(true);
             }
         }
     }
@@ -122,33 +85,11 @@ public class EventListener {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
-        String itemID = event.getItemStack().getType().getId();
 
-        DataContainer container = event.getItemStack().toContainer();
-        DataQuery query = DataQuery.of('/', "UnsafeDamage");
+        ItemStack itemStack = event.getItemStack().createStack();
 
-        int unsafeDamage = 0;
-        if (container.get(query).isPresent()) {
-            unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-        }
-        if (unsafeDamage != 0) {
-            itemID = itemID + ":" + unsafeDamage;
-        }
-
-        for (ItemData item : items) {
-            if (item.getItemid().equals(itemID) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemID)) {
-                    String reason = "";
-                    if (!item.getBanreason().isEmpty()) {
-                        reason = " &3- &7" +item.getBanreason();
-                    }
-                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
-                    player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
-                    checkInventory(player);
-                    event.setCancelled(true);
-                }
-            }
+        if (checkBanned(itemStack, "use", player)) {
+            event.setCancelled(true);
         }
     }
 
@@ -160,34 +101,11 @@ public class EventListener {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
-        String itemID = event.getTransactions().get(0).getFinal().getState().getId();
+        BlockSnapshot targetBlock = event.getTransactions().get(0).getFinal();
+        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        DataContainer container = event.getTransactions().get(0).getFinal().toContainer();
-        DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-        int unsafeDamage = 0;
-        if (container.get(query).isPresent()) {
-            unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-        }
-        if (unsafeDamage != 0) {
-            itemID = itemID + ":" + unsafeDamage;
-        }
-
-        for (ItemData item : items) {
-            if (item.getItemid().equals(itemID) && item.getPlacingbanned()) {
-                if (plugin.checkPerm(player, "place", itemID)) {
-                    String reason = "";
-                    if (!item.getBanreason().isEmpty()) {
-                        reason = " &3- &7" +item.getBanreason();
-                    }
-                    plugin.logToFile("action-log", player.getName() + " tried to place " +item.getItemname());
-                    player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
-                    checkInventory(player);
-                    event.getTransactions().get(0).setValid(false);
-                    event.setCancelled(true);
-                }
-            }
+        if (checkBanned(itemStack, "place", player)) {
+            event.setCancelled(true);
         }
     }
 
@@ -199,33 +117,11 @@ public class EventListener {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
-        String itemID = event.getTransactions().get(0).getFinal().getState().getId();
+        BlockSnapshot targetBlock = event.getTransactions().get(0).getFinal();
+        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        DataContainer container = event.getTransactions().get(0).getFinal().toContainer();
-        DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-        int unsafeDamage = 0;
-        if (container.get(query).isPresent()) {
-            unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-        }
-        if (unsafeDamage != 0) {
-            itemID = itemID + ":" + unsafeDamage;
-        }
-
-        for (ItemData item : items) {
-            if (item.getItemid().equals(itemID) && item.getBreakingbanned()) {
-                if (plugin.checkPerm(player, "break", itemID)) {
-                    String reason = "";
-                    if (!item.getBanreason().isEmpty()) {
-                        reason = " &3- &7" +item.getBanreason();
-                    }
-                    plugin.logToFile("action-log", player.getName() + " tried to break " +item.getItemname());
-                    player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
-                    event.getTransactions().get(0).setValid(false);
-                    event.setCancelled(true);
-                }
-            }
+        if (checkBanned(itemStack, "break", player)) {
+            event.setCancelled(true);
         }
     }
 
@@ -237,33 +133,11 @@ public class EventListener {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
-        String itemID = event.getTransactions().get(0).getFinal().getState().getId();
+        BlockSnapshot targetBlock = event.getTransactions().get(0).getFinal();
+        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        DataContainer container = event.getTransactions().get(0).getFinal().toContainer();
-        DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-        int unsafeDamage = 0;
-        if (container.get(query).isPresent()) {
-            unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-        }
-        if (unsafeDamage != 0) {
-            itemID = itemID + ":" + unsafeDamage;
-        }
-
-        for (ItemData item : items) {
-            if (item.getItemid().equals(itemID) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemID)) {
-                    String reason = "";
-                    if (!item.getBanreason().isEmpty()) {
-                        reason = " &3- &7" +item.getBanreason();
-                    }
-                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
-                    player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
-                    event.getTransactions().get(0).setValid(false);
-                    event.setCancelled(true);
-                }
-            }
+        if (checkBanned(itemStack, "use", player)) {
+            event.setCancelled(true);
         }
     }
 
@@ -272,37 +146,11 @@ public class EventListener {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         BlockSnapshot targetBlock = event.getTargetBlock();
-        String itemID = targetBlock.getExtendedState().getType().getId();
+        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        for (ItemData item : items) {
-            String itemid = itemID;
-            if (item.getItemid().contains(itemID)) {
-                ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
-
-                DataContainer container = itemStack.toContainer();
-                DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-                int unsafeDamage = 0;
-                if (container.get(query).isPresent()) {
-                    unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-                }
-                if (unsafeDamage != 0) {
-                    itemid = itemID + ":" + unsafeDamage;
-                }
-            }
-            if (item.getItemid().equals(itemid) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemid)) {
-                    String reason = "";
-                    if (!item.getBanreason().isEmpty()) {
-                        reason = " &3- &7" +item.getBanreason();
-                    }
-                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
-                    player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
-                    event.setCancelled(true);
-                }
-            }
+        if (checkBanned(itemStack, "use", player)) {
+            event.setCancelled(true);
         }
     }
 
@@ -346,37 +194,12 @@ public class EventListener {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
+
         BlockSnapshot targetBlock = event.getTargetBlock();
-        String itemID = targetBlock.getExtendedState().getType().getId();
+        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        for (ItemData item : items) {
-            String itemid = itemID;
-            if (item.getItemid().contains(itemID)) {
-                ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
-
-                DataContainer container = itemStack.toContainer();
-                DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-                int unsafeDamage = 0;
-                if (container.get(query).isPresent()) {
-                    unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-                }
-                if (unsafeDamage != 0) {
-                    itemid = itemID + ":" + unsafeDamage;
-                }
-            }
-            if (item.getItemid().equals(itemid) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemid)) {
-                    String reason = "";
-                    if (!item.getBanreason().isEmpty()) {
-                        reason = " &3- &7" +item.getBanreason();
-                    }
-                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
-                    player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
-                    event.setCancelled(true);
-                }
-            }
+        if (checkBanned(itemStack, "use", player)) {
+            event.setCancelled(true);
         }
     }
 
@@ -385,38 +208,12 @@ public class EventListener {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
+
         BlockSnapshot targetBlock = event.getTargetBlock();
-        String itemID = targetBlock.getExtendedState().getType().getId();
+        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-
-        for (ItemData item : items) {
-            String itemid = itemID;
-            if (item.getItemid().contains(itemID)) {
-                ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
-
-                DataContainer container = itemStack.toContainer();
-                DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-                int unsafeDamage = 0;
-                if (container.get(query).isPresent()) {
-                    unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-                }
-                if (unsafeDamage != 0) {
-                    itemid = itemID + ":" + unsafeDamage;
-                }
-            }
-            if (item.getItemid().equals(itemid) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemid)) {
-                    String reason = "";
-                    if (!item.getBanreason().isEmpty()) {
-                        reason = " &3- &7" +item.getBanreason();
-                    }
-                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
-                    player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
-                    event.setCancelled(true);
-                }
-            }
+        if (checkBanned(itemStack, "use", player)) {
+            event.setCancelled(true);
         }
     }
 
@@ -426,54 +223,68 @@ public class EventListener {
             return;
         }
 
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         BlockSnapshot targetBlock = event.getTargetBlock();
-        String itemID = targetBlock.getExtendedState().getType().getId();
+        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-
-        for (ItemData item : items) {
-            String itemid = itemID;
-            if (item.getItemid().contains(itemID)) {
-                ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
-
-                DataContainer container = itemStack.toContainer();
-                DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-                int unsafeDamage = 0;
-                if (container.get(query).isPresent()) {
-                    unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-                }
-                if (unsafeDamage != 0) {
-                    itemid = itemID + ":" + unsafeDamage;
-                }
-            }
-            if (item.getItemid().equals(itemid) && item.getUsagebanned()) {
-                if (plugin.checkPerm(player, "use", itemid)) {
-                    String reason = "";
-                    if (!item.getBanreason().isEmpty()) {
-                        reason = " &3- &7" +item.getBanreason();
-                    }
-                    plugin.logToFile("action-log", player.getName() + " tried to use " +item.getItemname());
-                    player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() +" is banned" + reason));
-                    event.setCancelled(true);
-                }
-            }
+        if (checkBanned(itemStack, "use", player)) {
+            event.setCancelled(true);
         }
     }
 
     @Listener
-    public void onAffectSlotEvent(AffectSlotEvent event, @Root Player player) {
+    public void onCraftItemEvent(CraftItemEvent.Preview event, @Root Player player) {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        checkInventory(player);
+        if (!event.getPreview().getFinal().isEmpty()) {
+            ItemStack itemStack = event.getPreview().getFinal().createStack();
+            if (checkBanned(itemStack, "craft", player)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    private boolean checkBanned(ItemStack itemStack, String banType, Player player) {
+        final List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
+        DataContainer container = itemStack.toContainer();
+        DataQuery query = DataQuery.of('/', "UnsafeDamage");
+        String itemID = itemStack.getType().getId();
+
+        int unsafeDamage = 0;
+        if (container.get(query).isPresent()) {
+            unsafeDamage = Integer.parseInt(container.get(query).get().toString());
+        }
+        if (unsafeDamage != 0) {
+            itemID = itemID + ":" + unsafeDamage;
+        }
+
+        for (ItemData item : items) {
+            if (item.getItemid().contains(itemID)
+                    && ((banType.equalsIgnoreCase("craft") && item.getCraftbanned())
+                    || (banType.equalsIgnoreCase("break") && item.getBreakingbanned())
+                    || (banType.equalsIgnoreCase("drop") && item.getDropbanned())
+                    || (banType.equalsIgnoreCase("own") && item.getOwnershipbanned())
+                    || (banType.equalsIgnoreCase("place") && item.getPlacingbanned())
+                    || (banType.equalsIgnoreCase("use") && item.getUsagebanned()))) {
+                if (plugin.checkPerm(player, banType.toLowerCase(), itemID)) {
+                    String reason = "";
+                    if (!item.getBanreason().isEmpty()) {
+                        reason = " &3- &7" + item.getBanreason();
+                    }
+                    plugin.logToFile("action-log", player.getName() + " tried to " + banType.toLowerCase() + " " + item.getItemname());
+                    player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() + " is banned" + reason));
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void checkInventory(Player player) {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
         }
-        final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
+        final List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         for (Inventory s : player.getInventory().slots()) {
             if (s.peek().isPresent()) {
                 ItemStack itemStack = s.peek().get();

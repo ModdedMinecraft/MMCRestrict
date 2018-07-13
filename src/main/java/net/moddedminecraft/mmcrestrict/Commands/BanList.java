@@ -14,6 +14,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class BanList implements CommandExecutor {
     private final Main plugin;
@@ -41,6 +42,7 @@ public class BanList implements CommandExecutor {
                                 " &6Break&7: " + item.getBreakingbanned() +
                                 " &6Place&7: " + item.getPlacingbanned() +
                                 " &6Own&7: " + item.getOwnershipbanned() +
+                                " &6Craft&7: " + item.getCraftbanned() +
                                 " &6World&7: " + item.getWorldbanned() + ""
                                 + "\n&7Id: " + item.getItemid()
                                 + "\n&3Click to edit this item"
@@ -52,6 +54,7 @@ public class BanList implements CommandExecutor {
                                 " &6Break&7: " + item.getBreakingbanned() +
                                 " &6Place&7: " + item.getPlacingbanned() +
                                 " &6Own&7: " + item.getOwnershipbanned() +
+                                " &6Craft&7: " + item.getCraftbanned() +
                                 " &6World&7: " + item.getWorldbanned()
                                 + "\n&7Id: " + item.getItemid()
                 )));
@@ -61,6 +64,7 @@ public class BanList implements CommandExecutor {
                                 " &6Break&7: " + item.getBreakingbanned() +
                                 " &6Place&7: " + item.getPlacingbanned() +
                                 " &6Own&7: " + item.getOwnershipbanned() +
+                                " &6Craft&7: " + item.getCraftbanned() +
                                 " &6World&7: " + item.getWorldbanned()
                 )));
             }

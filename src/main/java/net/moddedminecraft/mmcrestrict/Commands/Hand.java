@@ -62,6 +62,7 @@ public class Hand implements CommandExecutor {
                     Config.defaultPlacing,
                     Config.defaultOwnership,
                     Config.defaultDrop,
+                    Config.defaultCraft,
                     Config.defaultWorld
             ));
 

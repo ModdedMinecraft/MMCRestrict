@@ -9,8 +9,8 @@ import java.util.List;
 
 public class ItemData extends ItemDataUtil {
 
-    public ItemData(String itemid, String itemname, String banreason, Boolean usagebanned, Boolean breakingbanned, Boolean placingbanned, Boolean ownershipbanned, Boolean dropbanned, Boolean worldbanned) {
-        super(itemid, itemname, banreason, usagebanned, breakingbanned, placingbanned, ownershipbanned, dropbanned, worldbanned);
+    public ItemData(String itemid, String itemname, String banreason, Boolean usagebanned, Boolean breakingbanned, Boolean placingbanned, Boolean ownershipbanned, Boolean dropbanned, Boolean craftbanned, Boolean worldbanned) {
+        super(itemid, itemname, banreason, usagebanned, breakingbanned, placingbanned, ownershipbanned, dropbanned, craftbanned, worldbanned);
     }
 
     public static class ItemDataSerializer implements TypeSerializer<ItemData> {
@@ -28,6 +28,7 @@ public class ItemData extends ItemDataUtil {
                     node.getNode("placingbanned").getBoolean(),
                     node.getNode("ownershipbanned").getBoolean(),
                     node.getNode("dropbanned").getBoolean(),
+                    node.getNode("craftbanned").getBoolean(),
                     node.getNode("worldbanned").getBoolean());
         }
 
@@ -41,6 +42,7 @@ public class ItemData extends ItemDataUtil {
             node.getNode("placingbanned").setValue(itemdata.placingbanned);
             node.getNode("ownershipbanned").setValue(itemdata.ownershipbanned);
             node.getNode("dropbanned").setValue(itemdata.dropbanned);
+            node.getNode("craftbanned").setValue(itemdata.craftbanned);
             node.getNode("worldbanned").setValue(itemdata.worldbanned);
         }
     }

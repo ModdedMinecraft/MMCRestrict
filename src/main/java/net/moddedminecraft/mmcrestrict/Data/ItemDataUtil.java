@@ -3,9 +3,9 @@ package net.moddedminecraft.mmcrestrict.Data;
 public class ItemDataUtil {
 
     protected String itemid, itemname, banreason;
-    protected Boolean ownershipbanned, usagebanned, breakingbanned, placingbanned, dropbanned, worldbanned;
+    protected Boolean ownershipbanned, usagebanned, breakingbanned, placingbanned, dropbanned, craftbanned, worldbanned;
 
-    public ItemDataUtil(String itemid, String itemname, String banreason, Boolean usagebanned, Boolean breakingbanned, Boolean placingbanned, Boolean ownershipbanned, Boolean dropbanned, Boolean worldbanned) {
+    public ItemDataUtil(String itemid, String itemname, String banreason, Boolean usagebanned, Boolean breakingbanned, Boolean placingbanned, Boolean ownershipbanned, Boolean dropbanned, Boolean craftbanned, Boolean worldbanned) {
         this.itemid = itemid;
         this.itemname = itemname;
         this.banreason = banreason;
@@ -14,6 +14,7 @@ public class ItemDataUtil {
         this.breakingbanned = breakingbanned;
         this.placingbanned = placingbanned;
         this.dropbanned = dropbanned;
+        this.craftbanned = craftbanned;
         this.worldbanned = worldbanned;
     }
 
@@ -85,4 +86,11 @@ public class ItemDataUtil {
         this.worldbanned = worldbanned;
     }
 
+    public Boolean getCraftbanned() {
+        return craftbanned;
+    }
+
+    public void setCraftbanned(Boolean craftbanned) {
+        this.craftbanned = craftbanned;
+    }
 }

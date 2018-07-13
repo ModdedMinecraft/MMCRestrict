@@ -40,7 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.4.3", description = "A simple item restriction plugin", authors = {"Leelawd93"})
+@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.5.0", description = "A simple item restriction plugin", authors = {"Leelawd93"})
 public class Main {
 
     private static Main instance;
@@ -126,6 +126,7 @@ public class Main {
                 put("place", "place");
                 put("own", "own");
                 put("drop", "drop");
+                put("craft", "craft");
                 put("name", "name");
                 put("world", "world");
             }
@@ -230,6 +231,7 @@ public class Main {
                     Config.defaultPlacing,
                     Config.defaultOwnership,
                     Config.defaultDrop,
+                    Config.defaultCraft,
                     Config.defaultWorld
             ));
             logToFile("ban-list", playerName + " added " +itemName+ " to the ban list");
@@ -293,6 +295,10 @@ public class Main {
         } else {
             return false;
         }
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 
     public void logToFile(String filename, String message) {

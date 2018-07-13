@@ -35,6 +35,7 @@ public class Config {
     public static Boolean defaultPlacing = true;
     public static Boolean defaultOwnership = true;
     public static Boolean defaultDrop = false;
+    public static Boolean defaultCraft = true;
     public static Boolean defaultWorld = false;
 
     public void configCheck() throws IOException, ObjectMappingException {
@@ -56,6 +57,7 @@ public class Config {
         defaultPlacing = check(config.getNode("defaults", "placing"), defaultPlacing).getBoolean();
         defaultOwnership = check(config.getNode("defaults", "ownership"), defaultOwnership).getBoolean();
         defaultDrop = check(config.getNode("defaults", "drop"), defaultDrop).getBoolean();
+        defaultCraft = check(config.getNode("defaults", "craft"), defaultCraft).getBoolean();
         defaultWorld = check(config.getNode("defaults", "world"), defaultWorld).getBoolean();
 
         logToFile = check(config.getNode("log-to-file"), true, "Log any banned action or banned item change to a file.").getBoolean();
