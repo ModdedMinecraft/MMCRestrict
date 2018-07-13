@@ -15,6 +15,7 @@ import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.item.inventory.AffectSlotEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
+import org.spongepowered.api.event.item.inventory.CraftItemEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.InteractItemEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
