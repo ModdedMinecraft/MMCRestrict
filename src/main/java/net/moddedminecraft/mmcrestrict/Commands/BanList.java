@@ -71,6 +71,8 @@ public class BanList implements CommandExecutor {
             contents.add(plugin.fromLegacy("&eNo banned item have been set"));
         }
 
+        Collections.sort(contents);
+
         paginationService.builder()
                 .title(plugin.fromLegacy("&6Banned List"))
                 .contents(contents)
