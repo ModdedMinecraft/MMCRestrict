@@ -1,6 +1,7 @@
 package net.moddedminecraft.mmcrestrict;
 
 import net.moddedminecraft.mmcrestrict.Data.ItemData;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.tileentity.carrier.TileEntityCarrier;
@@ -13,10 +14,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.filter.cause.Root;
-import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
-import org.spongepowered.api.event.item.inventory.CraftItemEvent;
-import org.spongepowered.api.event.item.inventory.DropItemEvent;
-import org.spongepowered.api.event.item.inventory.InteractItemEvent;
+import org.spongepowered.api.event.item.inventory.*;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
@@ -27,6 +25,7 @@ import org.spongepowered.api.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class EventListener {
 
@@ -244,6 +243,70 @@ public class EventListener {
         }
     }
 
+    @Listener
+    public void onChangeEquipment(ChangeInventoryEvent.Equipment event, @Root Player player) {
+        if (player.hasPermission(Permissions.ITEM_BYPASS)) {
+            return;
+        }
+        for (SlotTransaction transaction : event.getTransactions()) {
+            ItemStack itemStack = transaction.getFinal().createStack();
+            if (itemStack.getType().equals(ItemTypes.NONE)) {
+                continue;
+            }
+
+            if (checkBanned(itemStack, "own", player)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @Listener
+    public void onChangeHeld(ChangeInventoryEvent.Held event, @Root Player player) {
+        if (player.hasPermission(Permissions.ITEM_BYPASS)) {
+            return;
+        }
+        for (SlotTransaction transaction : event.getTransactions()) {
+            ItemStack itemStack = transaction.getFinal().createStack();
+            if (itemStack.getType().equals(ItemTypes.NONE)) {
+                continue;
+            }
+
+            if (checkBanned(itemStack, "own", player)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @Listener
+    public void onClickInventoryEvent(ClickInventoryEvent event, @Root Player player) {
+        if (player.hasPermission(Permissions.ITEM_BYPASS)) {
+            return;
+        }
+        if (event instanceof ClickInventoryEvent.Shift) {
+            for (SlotTransaction transaction : event.getTransactions()) {
+                ItemStack itemStack = transaction.getFinal().createStack();
+                if (checkBanned(itemStack, "own", player)) {
+                    event.setCancelled(true);
+                    Sponge.getScheduler().createTaskBuilder().execute(new Runnable() {
+                        public void run() {
+                            checkInventory(player);
+                        }
+                    }).delay(1, TimeUnit.SECONDS).name("mmcrestrict-s-onclickinventoryevent").submit(this.plugin);
+                }
+            }
+        } else {
+            ItemStack itemStack = event.getCursorTransaction().getFinal().createStack();
+            if (checkBanned(itemStack, "own", player)) {
+                event.setCancelled(true);
+                Sponge.getScheduler().createTaskBuilder().execute(new Runnable() {
+                    public void run() {
+                        checkInventory(player);
+                    }
+                }).delay(1, TimeUnit.SECONDS).name("mmcrestrict-s-onclickinventoryevent").submit(this.plugin);
+            }
+        }
+    }
+
     private boolean checkBanned(ItemStack itemStack, String banType, Player player) {
         final List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         DataContainer container = itemStack.toContainer();
@@ -259,7 +322,7 @@ public class EventListener {
         }
 
         for (ItemData item : items) {
-            if (item.getItemid().contains(itemID)
+            if (item.getItemid().equalsIgnoreCase(itemID)
                     && ((banType.equalsIgnoreCase("craft") && item.getCraftbanned())
                     || (banType.equalsIgnoreCase("break") && item.getBreakingbanned())
                     || (banType.equalsIgnoreCase("drop") && item.getDropbanned())
@@ -273,6 +336,7 @@ public class EventListener {
                     }
                     plugin.logToFile("action-log", player.getName() + " tried to " + banType.toLowerCase() + " " + item.getItemname());
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() + " is banned" + reason));
+                    checkInventory(player);
                     return true;
                 }
             }
@@ -301,11 +365,9 @@ public class EventListener {
                     itemID = itemID + ":" + unsafeDamage;
                 }
                 for (ItemData item : items) {
-                    if (item.getItemid().equals(itemID) && item.getOwnershipbanned()) {
+                    if (item.getItemid().equalsIgnoreCase(itemID) && item.getOwnershipbanned()) {
                         if (plugin.checkPerm(player, "own", itemID)) {
-                            ItemStack dirt = ItemStack.builder().itemType(ItemTypes.DIRT).build();
                             s.clear();
-                            //s.set(dirt);
                             String reason = "";
                             if (!item.getBanreason().isEmpty()) {
                                 reason = " &3- &7" + item.getBanreason();
