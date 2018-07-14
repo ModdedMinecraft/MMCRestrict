@@ -101,9 +101,8 @@ public class EventListener {
             return;
         }
         BlockSnapshot targetBlock = event.getTransactions().get(0).getFinal();
-        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        if (checkBanned(itemStack, "place", player)) {
+        if (checkBanned(targetBlock, "place", player)) {
             event.setCancelled(true);
         }
     }
@@ -117,9 +116,8 @@ public class EventListener {
             return;
         }
         BlockSnapshot targetBlock = event.getTransactions().get(0).getFinal();
-        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        if (checkBanned(itemStack, "break", player)) {
+        if (checkBanned(targetBlock, "break", player)) {
             event.setCancelled(true);
         }
     }
@@ -133,9 +131,8 @@ public class EventListener {
             return;
         }
         BlockSnapshot targetBlock = event.getTransactions().get(0).getFinal();
-        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        if (checkBanned(itemStack, "use", player)) {
+        if (checkBanned(targetBlock, "use", player)) {
             event.setCancelled(true);
         }
     }
@@ -146,9 +143,8 @@ public class EventListener {
             return;
         }
         BlockSnapshot targetBlock = event.getTargetBlock();
-        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        if (checkBanned(itemStack, "use", player)) {
+        if (checkBanned(targetBlock, "use", player)) {
             event.setCancelled(true);
         }
     }
@@ -195,9 +191,8 @@ public class EventListener {
         }
 
         BlockSnapshot targetBlock = event.getTargetBlock();
-        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        if (checkBanned(itemStack, "use", player)) {
+        if (checkBanned(targetBlock, "use", player)) {
             event.setCancelled(true);
         }
     }
@@ -209,9 +204,8 @@ public class EventListener {
         }
 
         BlockSnapshot targetBlock = event.getTargetBlock();
-        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        if (checkBanned(itemStack, "use", player)) {
+        if (checkBanned(targetBlock, "use", player)) {
             event.setCancelled(true);
         }
     }
@@ -223,9 +217,8 @@ public class EventListener {
         }
 
         BlockSnapshot targetBlock = event.getTargetBlock();
-        ItemStack itemStack = ItemStack.builder().fromBlockState(targetBlock.getState()).build();
 
-        if (checkBanned(itemStack, "use", player)) {
+        if (checkBanned(targetBlock, "use", player)) {
             event.setCancelled(true);
         }
     }
@@ -338,6 +331,47 @@ public class EventListener {
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() + " is banned" + reason));
                     checkInventory(player);
                     return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkBanned(BlockSnapshot blockSnapshot, String banType, Player player) {
+        final List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
+        String itemID = blockSnapshot.getExtendedState().getType().getId();
+
+        for (ItemData item : items) {
+            if (item.getItemid().contains(itemID)) {
+                ItemStack itemStack = ItemStack.builder().fromBlockState(blockSnapshot.getState()).build();
+                DataContainer container = itemStack.toContainer();
+                DataQuery query = DataQuery.of('/', "UnsafeDamage");
+
+                int unsafeDamage = 0;
+                if (container.get(query).isPresent()) {
+                    unsafeDamage = Integer.parseInt(container.get(query).get().toString());
+                }
+                if (unsafeDamage != 0) {
+                    itemID = itemID + ":" + unsafeDamage;
+                }
+
+                if (item.getItemid().equalsIgnoreCase(itemID)
+                        && ((banType.equalsIgnoreCase("craft") && item.getCraftbanned())
+                        || (banType.equalsIgnoreCase("break") && item.getBreakingbanned())
+                        || (banType.equalsIgnoreCase("drop") && item.getDropbanned())
+                        || (banType.equalsIgnoreCase("own") && item.getOwnershipbanned())
+                        || (banType.equalsIgnoreCase("place") && item.getPlacingbanned())
+                        || (banType.equalsIgnoreCase("use") && item.getUsagebanned()))) {
+                    if (plugin.checkPerm(player, banType.toLowerCase(), itemID)) {
+                        String reason = "";
+                        if (!item.getBanreason().isEmpty()) {
+                            reason = " &3- &7" + item.getBanreason();
+                        }
+                        plugin.logToFile("action-log", player.getName() + " tried to " + banType.toLowerCase() + " " + item.getItemname());
+                        player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() + " is banned" + reason));
+                        checkInventory(player);
+                        return true;
+                    }
                 }
             }
         }
