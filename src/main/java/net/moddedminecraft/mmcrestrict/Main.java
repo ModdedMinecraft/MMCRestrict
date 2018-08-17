@@ -83,6 +83,18 @@ public class Main {
 
         logger.info("Banned items loaded: " + items.size());
         logger.info("MMCRestrict Loaded");
+        logger.info("MMCRestrict PurgeWorld Started");
+
+        Task.builder()
+                .execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        checkLoadedChunks();
+                    }
+                })
+                .interval(20, TimeUnit.MINUTES)
+                .delay(5,TimeUnit.MINUTES)
+                .name("PurgeWorld BannedItems").submit(this);
     }
 
     @Listener
