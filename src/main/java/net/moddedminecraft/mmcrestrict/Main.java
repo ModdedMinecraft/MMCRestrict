@@ -27,6 +27,7 @@ import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.Chunk;
@@ -39,6 +40,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.5.1", description = "A simple item restriction plugin", authors = {"Leelawd93"})
 public class Main {
@@ -66,6 +68,9 @@ public class Main {
 
     private Config config;
 
+    private Task autoPurgeTask = null;
+
+
     @Listener
     public void Init(GameInitializationEvent event) throws IOException, ObjectMappingException {
         instance = this;
@@ -80,21 +85,34 @@ public class Main {
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-
         logger.info("Banned items loaded: " + items.size());
         logger.info("MMCRestrict Loaded");
-        logger.info("MMCRestrict PurgeWorld Started");
+    }
 
-        Task.builder()
+    public void startAutoPurge(){
+
+        logger.info("MMCRestrict World AutoPurge Started (check chunks every " + Config.defaultAutoPurgeInterval + " minutes )");
+
+        if (!Config.defaultAutoPurge){
+            return;
+        }
+
+        if (autoPurgeTask != null){
+            autoPurgeTask.cancel();
+        }
+
+        autoPurgeTask = Task.builder()
                 .execute(new Runnable() {
                     @Override
                     public void run() {
                         checkLoadedChunks();
                     }
                 })
-                .interval(20, TimeUnit.MINUTES)
+                .interval(Config.defaultAutoPurgeInterval, TimeUnit.MINUTES)
                 .delay(5,TimeUnit.MINUTES)
+                .async()
                 .name("PurgeWorld BannedItems").submit(this);
+
     }
 
     @Listener
@@ -216,6 +234,7 @@ public class Main {
             this.items.put(item.getItemid(), item);
         }
 
+        startAutoPurge();
     }
 
     public void saveData() throws IOException, ObjectMappingException {

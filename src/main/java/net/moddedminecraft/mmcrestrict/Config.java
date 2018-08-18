@@ -38,6 +38,10 @@ public class Config {
     public static Boolean defaultCraft = true;
     public static Boolean defaultWorld = false;
 
+    //Auto Purge
+    public static Boolean defaultAutoPurge = true;
+    public static Integer defaultAutoPurgeInterval = 20;
+
     public void configCheck() throws IOException, ObjectMappingException {
 
         if (!Files.exists(plugin.defaultConf)) {
@@ -60,10 +64,15 @@ public class Config {
         defaultCraft = check(config.getNode("defaults", "craft"), defaultCraft).getBoolean();
         defaultWorld = check(config.getNode("defaults", "world"), defaultWorld).getBoolean();
 
+        config.getNode("world-auto-purge").setComment("Check all Loaded Chunks looking for banned items.");
+        defaultAutoPurge = check(config.getNode("world-auto-purge", "is-enabled"), defaultAutoPurge).getBoolean();
+        defaultAutoPurgeInterval = check(config.getNode("world-auto-purge", "interval-in-minutes", "Check for banned items around the World... interval should be more than 5"), defaultAutoPurgeInterval).getInt();
+        if (defaultAutoPurgeInterval < 5){
+            defaultAutoPurgeInterval = 5;
+        }
+
         logToFile = check(config.getNode("log-to-file"), true, "Log any banned action or banned item change to a file.").getBoolean();
-
         loader.save(config);
-
     }
 
     private CommentedConfigurationNode check(CommentedConfigurationNode node, Object defaultValue, String comment) {
