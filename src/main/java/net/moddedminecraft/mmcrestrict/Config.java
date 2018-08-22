@@ -39,8 +39,11 @@ public class Config {
     public static Boolean defaultWorld = false;
 
     //Auto Purge
-    public static Boolean defaultAutoPurge = true;
+    public static Boolean defaultAutoPurge = false;
     public static Integer defaultAutoPurgeInterval = 20;
+
+
+    public static Boolean notifyStaff = true;
 
     public void configCheck() throws IOException, ObjectMappingException {
 
@@ -64,12 +67,15 @@ public class Config {
         defaultCraft = check(config.getNode("defaults", "craft"), defaultCraft).getBoolean();
         defaultWorld = check(config.getNode("defaults", "world"), defaultWorld).getBoolean();
 
-        config.getNode("world-auto-purge").setComment("Check all Loaded Chunks looking for banned items.");
+        config.getNode("world-auto-purge").setComment("Check all Loaded Chunks for banned items and remove them. If you experience lag, disable this and just use /restrict checkchunks manually");
         defaultAutoPurge = check(config.getNode("world-auto-purge", "is-enabled"), defaultAutoPurge).getBoolean();
-        defaultAutoPurgeInterval = check(config.getNode("world-auto-purge", "interval-in-minutes", "Check for banned items around the World... interval should be more than 5"), defaultAutoPurgeInterval).getInt();
+
+        defaultAutoPurgeInterval = check(config.getNode("world-auto-purge", "interval-in-minutes"), defaultAutoPurgeInterval, "Check for banned items around the World... interval should be more than 5").getInt();
         if (defaultAutoPurgeInterval < 5){
             defaultAutoPurgeInterval = 5;
         }
+
+        notifyStaff = check(config.getNode("notify-staff"), notifyStaff, "If enabled, will notify staff if someone attempts to use a banned item.").getBoolean();
 
         logToFile = check(config.getNode("log-to-file"), true, "Log any banned action or banned item change to a file.").getBoolean();
         loader.save(config);

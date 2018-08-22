@@ -328,6 +328,7 @@ public class EventListener {
                         reason = " &3- &7" + item.getBanreason();
                     }
                     plugin.logToFile("action-log", player.getName() + " tried to " + banType.toLowerCase() + " " + item.getItemname());
+                    plugin.notifyOnlineStaff(plugin.fromLegacy("&8[&6MMCRestrict&8] &c" + player.getName() + " tried to " + banType.toLowerCase() + " " + item.getItemname()));
                     player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() + " is banned" + reason));
                     checkInventory(player);
                     return true;
@@ -368,6 +369,7 @@ public class EventListener {
                             reason = " &3- &7" + item.getBanreason();
                         }
                         plugin.logToFile("action-log", player.getName() + " tried to " + banType.toLowerCase() + " " + item.getItemname());
+                        plugin.notifyOnlineStaff(plugin.fromLegacy("&8[&6MMCRestrict&8] &c" + player.getName() + " tried to " + banType.toLowerCase() + " " + item.getItemname()));
                         player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() + " is banned" + reason));
                         checkInventory(player);
                         return true;
@@ -406,7 +408,8 @@ public class EventListener {
                             if (!item.getBanreason().isEmpty()) {
                                 reason = " &3- &7" + item.getBanreason();
                             }
-                            plugin.logToFile("action-log", item.getItemname()+ " was removed from " +player.getName()+ "'s inventory" );
+                            plugin.logToFile("action-log", item.getItemname()+ " was removed from " +player.getName()+ "'s inventory");
+                            plugin.notifyOnlineStaff(plugin.fromLegacy("&8[&6MMCRestrict&8] &c" + item.getItemname()+ " was removed from " +player.getName()+ "'s inventory"));
                             player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() + " is banned and has been removed from your inventory" + reason));
                         }
                     }

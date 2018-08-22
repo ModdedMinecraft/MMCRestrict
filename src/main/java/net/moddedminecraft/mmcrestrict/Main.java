@@ -21,6 +21,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -81,6 +82,7 @@ public class Main {
 
         loadCommands();
         loadData();
+        startAutoPurge();
     }
 
     @Listener
@@ -89,16 +91,13 @@ public class Main {
         logger.info("MMCRestrict Loaded");
     }
 
-    public void startAutoPurge(){
-
-        logger.info("MMCRestrict World AutoPurge Started (check chunks every " + Config.defaultAutoPurgeInterval + " minutes )");
-
-        if (!Config.defaultAutoPurge){
-            return;
+    public void startAutoPurge() {
+        if (autoPurgeTask != null) {
+            autoPurgeTask.cancel();
         }
 
-        if (autoPurgeTask != null){
-            autoPurgeTask.cancel();
+        if (!Config.defaultAutoPurge) {
+            return;
         }
 
         autoPurgeTask = Task.builder()
@@ -111,7 +110,9 @@ public class Main {
                 .interval(Config.defaultAutoPurgeInterval, TimeUnit.MINUTES)
                 .delay(5,TimeUnit.MINUTES)
                 .async()
-                .name("PurgeWorld BannedItems").submit(this);
+                .name("mmcrestrict-a-bannedItemsAutoPurge").submit(this);
+
+        logger.info("MMCRestrict World AutoPurge Started (check chunks every " + Config.defaultAutoPurgeInterval + " minutes )");
 
     }
 
@@ -119,6 +120,7 @@ public class Main {
     public void onPluginReload(GameReloadEvent event) throws IOException, ObjectMappingException {
         this.config = new Config(this);
         loadData();
+        startAutoPurge();
     }
 
 
@@ -233,8 +235,6 @@ public class Main {
         for (ItemData item : itemList) {
             this.items.put(item.getItemid(), item);
         }
-
-        startAutoPurge();
     }
 
     public void saveData() throws IOException, ObjectMappingException {
@@ -357,6 +357,18 @@ public class Main {
             }
         }
 
+    }
+
+    public void notifyOnlineStaff(Text message) {
+        if (Config.notifyStaff) {
+            for (Player player : Sponge.getServer().getOnlinePlayers()) {
+                if (player.hasPermission(Permissions.NOTIFY)) {
+                    Text.Builder send = Text.builder();
+                    send.append(message);
+                    player.sendMessage(send.build());
+                }
+            }
+        }
     }
 
 }
