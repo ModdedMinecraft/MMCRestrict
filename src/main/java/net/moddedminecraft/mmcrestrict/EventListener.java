@@ -346,7 +346,14 @@ public class EventListener {
 
         for (ItemData item : items) {
             if (item.getItemid().contains(itemID)) {
-                ItemStack itemStack = ItemStack.builder().fromBlockState(blockSnapshot.getState()).build();
+                ItemStack itemStack;
+
+                try {
+                    itemStack = ItemStack.builder().fromBlockState(blockSnapshot.getState()).build();
+                } catch (Exception e) {
+                    return false;
+                }
+
                 DataContainer container = itemStack.toContainer();
                 DataQuery query = DataQuery.of('/', "UnsafeDamage");
 
