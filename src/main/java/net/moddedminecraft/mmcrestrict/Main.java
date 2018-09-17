@@ -43,7 +43,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.5.1", description = "A simple item restriction plugin", authors = {"Leelawd93"})
+@Plugin(id = "mmcrestrict", name = "MMCRestrict", version = "1.6.0", description = "A simple item restriction plugin", authors = {"Leelawd93"})
 public class Main {
 
     private static Main instance;
