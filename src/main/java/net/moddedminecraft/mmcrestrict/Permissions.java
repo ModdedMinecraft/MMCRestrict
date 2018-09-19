@@ -4,7 +4,8 @@ public class Permissions {
 
     public static final String LIST_BANNED_ITEMS = "mmcrestrict.commands.list";
 
-    //For specific items, Use as: mmcrestrict.bypass.[use/own].[ItemID/*] , ItemID can be found using /restrict whatsthis or /whatsthis with an item in hand
+    //For specific items, Use as: mmcrestrict.bypass.[use/own/craft/drop/place/break].[ItemID/*] , ItemID can be found using /restrict whatsthis or /whatsthis with an item in hand.
+    //Remeber to replace any of : with .
     public static final String ITEM_BYPASS = "mmcrestrict.bypass";
 
     public static final String NOTIFY = "mmcrestrict.notify";
