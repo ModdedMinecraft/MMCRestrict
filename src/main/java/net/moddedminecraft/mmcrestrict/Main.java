@@ -4,12 +4,14 @@ import com.flowpowered.math.vector.Vector3i;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import net.moddedminecraft.mmcrestrict.Commands.*;
+import net.moddedminecraft.mmcrestrict.Config.Config;
 import net.moddedminecraft.mmcrestrict.Data.ItemData;
 import net.moddedminecraft.mmcrestrict.Data.ItemData.ItemDataSerializer;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
+import org.bstats.sponge.Metrics2;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
@@ -53,7 +55,7 @@ public class Main {
     private Logger logger;
 
     @Inject
-    private Metrics metrics;
+    private Metrics2 metrics;
 
     @Inject
     @DefaultConfig(sharedRoot = false)
