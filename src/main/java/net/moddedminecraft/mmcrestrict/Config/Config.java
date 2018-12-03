@@ -1,6 +1,7 @@
-package net.moddedminecraft.mmcrestrict;
+package net.moddedminecraft.mmcrestrict.Config;
 
 import com.google.common.reflect.TypeToken;
+import net.moddedminecraft.mmcrestrict.Main;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;

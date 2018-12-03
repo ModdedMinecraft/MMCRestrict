@@ -1,6 +1,6 @@
 package net.moddedminecraft.mmcrestrict.Commands;
 
-import net.moddedminecraft.mmcrestrict.Config;
+import net.moddedminecraft.mmcrestrict.Config.Config;
 import net.moddedminecraft.mmcrestrict.Data.ItemData;
 import net.moddedminecraft.mmcrestrict.Main;
 import org.spongepowered.api.command.CommandException;

@@ -1,7 +1,7 @@
 package net.moddedminecraft.mmcrestrict.Commands;
 
 import com.flowpowered.math.vector.Vector3i;
-import net.moddedminecraft.mmcrestrict.Config;
+import net.moddedminecraft.mmcrestrict.Config.Config;
 import net.moddedminecraft.mmcrestrict.Main;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
