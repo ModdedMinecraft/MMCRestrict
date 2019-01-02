@@ -13,6 +13,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.item.inventory.*;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -145,6 +146,58 @@ public class EventListener {
         BlockSnapshot targetBlock = event.getTargetBlock();
 
         if (checkBanned(targetBlock, "use", player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @Listener
+    public void onEntityInteract(InteractEntityEvent.Secondary.MainHand event, @Root Player player) {
+        if (player.hasPermission(Permissions.ITEM_BYPASS)) {
+            return;
+        }
+
+        ItemStack itemStack = player.getItemInHand(HandTypes.MAIN_HAND).get().createSnapshot().createStack();
+
+        if (checkBanned(itemStack, "use", player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @Listener
+    public void onEntityInteract(InteractEntityEvent.Secondary.OffHand event, @Root Player player) {
+        if (player.hasPermission(Permissions.ITEM_BYPASS)) {
+            return;
+        }
+
+        ItemStack itemStack = player.getItemInHand(HandTypes.OFF_HAND).get().createSnapshot().createStack();
+
+        if (checkBanned(itemStack, "use", player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @Listener
+    public void onEntityInteract(InteractEntityEvent.Primary.MainHand event, @Root Player player) {
+        if (player.hasPermission(Permissions.ITEM_BYPASS)) {
+            return;
+        }
+
+        ItemStack itemStack = player.getItemInHand(HandTypes.MAIN_HAND).get().createSnapshot().createStack();
+
+        if (checkBanned(itemStack, "use", player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @Listener
+    public void onEntityInteract(InteractEntityEvent.Primary.OffHand event, @Root Player player) {
+        if (player.hasPermission(Permissions.ITEM_BYPASS)) {
+            return;
+        }
+
+        ItemStack itemStack = player.getItemInHand(HandTypes.OFF_HAND).get().createSnapshot().createStack();
+
+        if (checkBanned(itemStack, "use", player)) {
             event.setCancelled(true);
         }
     }

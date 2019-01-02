@@ -41,6 +41,7 @@ public class BanList implements CommandExecutor {
             arguments.put("ownbanned", item.getOwnershipbanned().toString());
             arguments.put("craftbanned", item.getCraftbanned().toString());
             arguments.put("worldbanned", item.getWorldbanned().toString());
+            arguments.put("itemname", item.getItemname());
 
             Text.Builder send = Text.builder();
 
