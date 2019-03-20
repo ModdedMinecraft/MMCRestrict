@@ -54,6 +54,7 @@ public class Hand implements CommandExecutor {
             }
 
             plugin.addItem(new ItemData(
+                    Config.defaultHidden,
                     itemId,
                     mainHandItem.getTranslation().get(),
                     Config.defaultReason,

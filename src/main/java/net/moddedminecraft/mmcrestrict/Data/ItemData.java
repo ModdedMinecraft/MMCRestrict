@@ -9,8 +9,8 @@ import java.util.List;
 
 public class ItemData extends ItemDataUtil {
 
-    public ItemData(String itemid, String itemname, String banreason, Boolean usagebanned, Boolean breakingbanned, Boolean placingbanned, Boolean ownershipbanned, Boolean dropbanned, Boolean craftbanned, Boolean worldbanned) {
-        super(itemid, itemname, banreason, usagebanned, breakingbanned, placingbanned, ownershipbanned, dropbanned, craftbanned, worldbanned);
+    public ItemData(Boolean hidden, String itemid, String itemname, String banreason, Boolean usagebanned, Boolean breakingbanned, Boolean placingbanned, Boolean ownershipbanned, Boolean dropbanned, Boolean craftbanned, Boolean worldbanned) {
+        super(hidden, itemid, itemname, banreason, usagebanned, breakingbanned, placingbanned, ownershipbanned, dropbanned, craftbanned, worldbanned);
     }
 
     public static class ItemDataSerializer implements TypeSerializer<ItemData> {
@@ -20,6 +20,7 @@ public class ItemData extends ItemDataUtil {
         @Override
         public ItemData deserialize(TypeToken<?> token, ConfigurationNode node) throws ObjectMappingException {
             return new ItemData(
+                    node.getNode("hidden").getBoolean(),
                     node.getNode("itemid").getString(),
                     node.getNode("itemname").getString(),
                     node.getNode("banreason").getString(),
@@ -34,6 +35,7 @@ public class ItemData extends ItemDataUtil {
 
         @Override
         public void serialize(TypeToken<?> token, ItemData itemdata, ConfigurationNode node) throws ObjectMappingException {
+            node.getNode("hidden").setValue(itemdata.hidden);
             node.getNode("itemid").setValue(itemdata.itemid);
             node.getNode("itemname").setValue(itemdata.itemname);
             node.getNode("banreason").setValue(itemdata.banreason);

@@ -31,6 +31,7 @@ public class Config {
     public static List<String> sendToChestWhitelist;
 
     public static String defaultReason = "";
+    public static Boolean defaultHidden = false;
     public static Boolean defaultUsage = true;
     public static Boolean defaultBreaking = true;
     public static Boolean defaultPlacing = true;
@@ -57,9 +58,9 @@ public class Config {
         } else {
             sendToChestWhitelist = config.getNode("send-to-chest", "whitelist").setValue(Collections.emptyList()).getList(TypeToken.of(String.class));
         }
-
         config.getNode("defaults").setComment("Default values for any newly added banned item.");
         defaultReason = check(config.getNode("defaults", "reason"), defaultReason).getString();
+        defaultHidden = check(config.getNode("defaults", "hidden"), defaultHidden).getBoolean();
         defaultUsage = check(config.getNode("defaults", "usage"), defaultUsage).getBoolean();
         defaultBreaking = check(config.getNode("defaults", "breaking"), defaultBreaking).getBoolean();
         defaultPlacing = check(config.getNode("defaults", "placing"), defaultPlacing).getBoolean();

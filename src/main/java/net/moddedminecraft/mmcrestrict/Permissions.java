@@ -10,6 +10,8 @@ public class Permissions {
 
     public static final String NOTIFY = "mmcrestrict.notify";
 
+    public static final String LIST_HIDDEN = "mmcrestrict.hidden.list";
+    public static final String LIST_HIDDEN_EDIT = "mmcrestrict.hidden.edit";
     public static final String LIST_EXTRA = "mmcrestrict.extra.list";
     public static final String EDIT_BANNED_ITEM = "mmcrestrict.commands.edit";
     public static final String REMOVE_BANNED_ITEM = "mmcrestrict.commands.remove";

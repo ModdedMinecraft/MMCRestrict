@@ -5,6 +5,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import net.moddedminecraft.mmcrestrict.Commands.*;
 import net.moddedminecraft.mmcrestrict.Config.Config;
+import net.moddedminecraft.mmcrestrict.Config.Messages;
 import net.moddedminecraft.mmcrestrict.Data.ItemData;
 import net.moddedminecraft.mmcrestrict.Data.ItemData.ItemDataSerializer;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -69,15 +70,14 @@ public class Main {
 
     private Map<String, ItemData> items;
 
-    private Config config;
-
     private Task autoPurgeTask = null;
 
 
     @Listener
     public void Init(GameInitializationEvent event) throws IOException, ObjectMappingException {
         instance = this;
-        this.config = new Config(this);
+        new Config(this);
+        new Messages(this);
         Sponge.getEventManager().registerListeners(this, new EventListener(this));
 
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(ItemData.class), new ItemDataSerializer());
@@ -120,7 +120,7 @@ public class Main {
 
     @Listener
     public void onPluginReload(GameReloadEvent event) throws IOException, ObjectMappingException {
-        this.config = new Config(this);
+        new Config(this);
         loadData();
         startAutoPurge();
     }
@@ -180,6 +180,7 @@ public class Main {
         CommandSpec bannedList = CommandSpec.builder()
                 .description(Text.of("List the banned items"))
                 .executor(new BanList(this))
+                .arguments(GenericArguments.optional(GenericArguments.requiringPermission(GenericArguments.string(Text.of("hidden")), Permissions.LIST_HIDDEN)))
                 .permission(Permissions.LIST_BANNED_ITEMS)
                 .build();
 
@@ -256,6 +257,7 @@ public class Main {
         }
         if (!itemExist) {
             addItem(new ItemData(
+                    Config.defaultHidden,
                     itemID,
                     itemName,
                     Config.defaultReason,
