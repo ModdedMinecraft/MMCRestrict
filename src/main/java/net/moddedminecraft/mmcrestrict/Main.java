@@ -12,7 +12,6 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
-import org.bstats.sponge.Metrics2;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
@@ -54,9 +53,6 @@ public class Main {
 
     @Inject
     private Logger logger;
-
-    @Inject
-    private Metrics2 metrics;
 
     @Inject
     @DefaultConfig(sharedRoot = false)
