@@ -1,6 +1,7 @@
 package net.moddedminecraft.mmcrestrict.Commands;
 
 import net.moddedminecraft.mmcrestrict.Data.ItemData;
+import net.moddedminecraft.mmcrestrict.Data.ModData;
 import net.moddedminecraft.mmcrestrict.Main;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -22,22 +23,36 @@ public class Remove implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         String itemType = args.<String>getOne("ItemID").get();
         final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
+        final java.util.List<ModData> mods = new ArrayList<ModData>(plugin.getModData());
         String itemName = null;
 
+        for (ModData mod : mods) {
+            if (mod.getMod().equals(itemType)) {
+                itemName = mod.getMod();
+                if (plugin.removeMod(itemType) != null) {
+                    try {
+                        plugin.saveData();
+                    } catch (Exception e) {
+                        src.sendMessage(Text.of("Data was not saved correctly."));
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
         for (ItemData item : items) {
             if (item.getItemid().equals(itemType)) {
                 itemName = item.getItemname();
+                if (plugin.removeItem(itemType) != null) {
+                    try {
+                        plugin.saveData();
+                    } catch (Exception e) {
+                        src.sendMessage(Text.of("Data was not saved correctly."));
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
-        if (plugin.removeItem(itemType) != null) {
-            try {
-                plugin.saveData();
-            } catch (Exception e) {
-                src.sendMessage(Text.of("Data was not saved correctly."));
-                e.printStackTrace();
-            }
-        }
 
         if (itemName == null) {
             plugin.logToFile("ban-list", src.getName() + " removed an item from the ban list");

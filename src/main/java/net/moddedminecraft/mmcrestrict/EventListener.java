@@ -1,6 +1,7 @@
 package net.moddedminecraft.mmcrestrict;
 
 import net.moddedminecraft.mmcrestrict.Data.ItemData;
+import net.moddedminecraft.mmcrestrict.Data.ModData;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockTypes;
@@ -355,6 +356,7 @@ public class EventListener {
 
     private boolean checkBanned(ItemStack itemStack, String banType, Player player) {
         final List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
+        final List<ModData> mods = new ArrayList<ModData>(plugin.getModData());
         DataContainer container = itemStack.toContainer();
         DataQuery query = DataQuery.of('/', "UnsafeDamage");
         String itemID = itemStack.getType().getId();
@@ -365,6 +367,30 @@ public class EventListener {
         }
         if (unsafeDamage != 0) {
             itemID = itemID + ":" + unsafeDamage;
+        }
+
+        for (ModData mod : mods) {
+            if (itemID.startsWith(mod.getMod())
+                    && ((banType.equalsIgnoreCase("craft") && mod.getCraftbanned())
+                    || (banType.equalsIgnoreCase("break") && mod.getBreakingbanned())
+                    || (banType.equalsIgnoreCase("drop") && mod.getDropbanned())
+                    || (banType.equalsIgnoreCase("own") && mod.getOwnershipbanned())
+                    || (banType.equalsIgnoreCase("place") && mod.getPlacingbanned())
+                    || (banType.equalsIgnoreCase("use") && mod.getUsagebanned()))) {
+                if (plugin.checkPerm(player, banType.toLowerCase(), mod.getMod())) {
+                    String reason = "";
+                    if (!mod.getBanreason().isEmpty()) {
+                        reason = " &3- &7" + mod.getBanreason();
+                    }
+                    plugin.logToFile("action-log", player.getName() + " tried to " + banType.toLowerCase() + " " + mod.getModname());
+                    if (!banType.equalsIgnoreCase("own")) {
+                        plugin.notifyOnlineStaff(plugin.fromLegacy("&8[&6MMCRestrict&8] &c" + player.getName() + " tried to " + banType.toLowerCase() + " " + itemID));
+                    }
+                    player.sendMessage(plugin.fromLegacy("&c" + mod.getModname() + " mod is banned" + reason));
+                    checkInventory(player);
+                    return true;
+                }
+            }
         }
 
         for (ItemData item : items) {
@@ -395,28 +421,54 @@ public class EventListener {
 
     private boolean checkBanned(BlockSnapshot blockSnapshot, String banType, Player player) {
         final List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
+        final List<ModData> mods = new ArrayList<ModData>(plugin.getModData());
         String itemID = blockSnapshot.getExtendedState().getType().getId();
 
+        for (ModData mod : mods) {
+            if (itemID.startsWith(mod.getMod())
+                    && ((banType.equalsIgnoreCase("craft") && mod.getCraftbanned())
+                    || (banType.equalsIgnoreCase("break") && mod.getBreakingbanned())
+                    || (banType.equalsIgnoreCase("drop") && mod.getDropbanned())
+                    || (banType.equalsIgnoreCase("own") && mod.getOwnershipbanned())
+                    || (banType.equalsIgnoreCase("place") && mod.getPlacingbanned())
+                    || (banType.equalsIgnoreCase("use") && mod.getUsagebanned()))) {
+                if (plugin.checkPerm(player, banType.toLowerCase(), mod.getMod())) {
+                    String reason = "";
+                    if (!mod.getBanreason().isEmpty()) {
+                        reason = " &3- &7" + mod.getBanreason();
+                    }
+                    plugin.logToFile("action-log", player.getName() + " tried to " + banType.toLowerCase() + " " + mod.getModname());
+                    if (!banType.equalsIgnoreCase("own")) {
+                        plugin.notifyOnlineStaff(plugin.fromLegacy("&8[&6MMCRestrict&8] &c" + player.getName() + " tried to " + banType.toLowerCase() + " " + itemID));
+                    }
+                    player.sendMessage(plugin.fromLegacy("&c" + mod.getModname() + " mod is banned" + reason));
+                    checkInventory(player);
+                    return true;
+                }
+            }
+        }
+
+        ItemStack itemStack;
+
+        try {
+            itemStack = ItemStack.builder().fromBlockState(blockSnapshot.getState()).build();
+        } catch (Exception e) {
+            return false;
+        }
+
+        DataContainer container = itemStack.toContainer();
+        DataQuery query = DataQuery.of('/', "UnsafeDamage");
+
+        int unsafeDamage = 0;
+        if (container.get(query).isPresent()) {
+            unsafeDamage = Integer.parseInt(container.get(query).get().toString());
+        }
+        if (unsafeDamage != 0) {
+            itemID = itemID + ":" + unsafeDamage;
+        }
+
         for (ItemData item : items) {
-            if (item.getItemid().contains(itemID)) {
-                ItemStack itemStack;
-
-                try {
-                    itemStack = ItemStack.builder().fromBlockState(blockSnapshot.getState()).build();
-                } catch (Exception e) {
-                    return false;
-                }
-
-                DataContainer container = itemStack.toContainer();
-                DataQuery query = DataQuery.of('/', "UnsafeDamage");
-
-                int unsafeDamage = 0;
-                if (container.get(query).isPresent()) {
-                    unsafeDamage = Integer.parseInt(container.get(query).get().toString());
-                }
-                if (unsafeDamage != 0) {
-                    itemID = itemID + ":" + unsafeDamage;
-                }
+            if (item.getItemid().equalsIgnoreCase(itemID)) {
 
                 if (item.getItemid().equalsIgnoreCase(itemID)
                         && ((banType.equalsIgnoreCase("craft") && item.getCraftbanned())

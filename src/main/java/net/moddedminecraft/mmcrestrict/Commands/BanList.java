@@ -2,6 +2,7 @@ package net.moddedminecraft.mmcrestrict.Commands;
 
 import net.moddedminecraft.mmcrestrict.Config.Messages;
 import net.moddedminecraft.mmcrestrict.Data.ItemData;
+import net.moddedminecraft.mmcrestrict.Data.ModData;
 import net.moddedminecraft.mmcrestrict.Main;
 import net.moddedminecraft.mmcrestrict.Permissions;
 import org.spongepowered.api.Sponge;
@@ -30,12 +31,66 @@ public class BanList implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         final java.util.List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
+        final java.util.List<ModData> mods = new ArrayList<ModData>(plugin.getModData());
         Optional<String> hidden = args.<String>getOne("hidden");
 
         PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
         java.util.List<Text> contents = new ArrayList<>();
 
         if (hidden.isPresent()) {
+            for (ModData mod : mods) {
+                if (!mod.getHidden()) {
+                    continue;
+                }
+                HashMap<String, String> arguments = new HashMap<>();
+                arguments.put("banreason", mod.getBanreason());
+                arguments.put("itemid", mod.getMod());
+                arguments.put("usebanned", mod.getUsagebanned().toString());
+                arguments.put("breakbanned", mod.getBreakingbanned().toString());
+                arguments.put("placebanned", mod.getPlacingbanned().toString());
+                arguments.put("ownbanned", mod.getOwnershipbanned().toString());
+                arguments.put("craftbanned", mod.getCraftbanned().toString());
+                arguments.put("worldbanned", "false");
+                arguments.put("modname", mod.getModname());
+                arguments.put("hidden", mod.getHidden() ? "show" : "hide");
+
+                Text.Builder send = Text.builder();
+
+                String banreason = "";
+                if (!mod.getBanreason().isEmpty()) {
+                    banreason = Messages.bannedItemReason;
+                }
+
+                if (src.hasPermission(Permissions.LIST_HIDDEN_EDIT)) {
+                    send.append(Text.builder().append(Messages.parseMessage(Messages.bannedListHidden, arguments))
+                            .onClick(TextActions.executeCallback(changeHiddenMod(mod.getMod())))
+                            .onHover(TextActions.showText(Messages.parseMessage(Messages.bannedListHideHover, arguments))).build());
+                    send.append(plugin.fromLegacy(" "));
+                }
+
+                String banInfo = Messages.bannedItemHover;
+                if ((src.hasPermission(Permissions.LIST_EXTRA) && src.hasPermission(Permissions.EDIT_BANNED_ITEM))) {
+                    banInfo = banInfo + "\n" + Messages.bannedItemExtraInfo + "\n" + Messages.bannedItemEdit;
+                    send.append(Messages.parseMessage(Messages.bannedMod + banreason, arguments))
+                            .onClick(TextActions.runCommand("/restrict edit " + mod.getMod()))
+                            .onHover(TextActions.showText(Messages.parseMessage(banInfo, arguments)));
+                } else if (src.hasPermission(Permissions.LIST_EXTRA)) {
+                    banInfo = banInfo + "\n" + Messages.bannedItemExtraInfo;
+                    send.append(Messages.parseMessage(Messages.bannedMod + banreason, arguments))
+                            .onHover(TextActions.showText(Messages.parseMessage(banInfo, arguments)));
+                } else if (src.hasPermission(Permissions.EDIT_BANNED_ITEM)) {
+                    banInfo = banInfo + "\n" + Messages.bannedItemEdit;
+                    send.append(Messages.parseMessage(Messages.bannedMod + banreason, arguments))
+                            .onClick(TextActions.runCommand("/restrict edit " + mod.getMod()))
+                            .onHover(TextActions.showText(Messages.parseMessage(banInfo, arguments)));
+                } else {
+                    send.append(Messages.parseMessage(Messages.bannedMod + banreason, arguments))
+                            .onHover(TextActions.showText(Messages.parseMessage(banInfo, arguments)));
+                }
+
+                contents.add(send.build());
+            }
+
             for (ItemData item : items) {
                 if (!item.getHidden()) {
                     continue;
@@ -89,6 +144,59 @@ public class BanList implements CommandExecutor {
                 contents.add(send.build());
             }
         } else {
+            for (ModData mod : mods) {
+                if (mod.getHidden()) {
+                    continue;
+                }
+                HashMap<String, String> arguments = new HashMap<>();
+                arguments.put("banreason", mod.getBanreason());
+                arguments.put("itemid", mod.getMod());
+                arguments.put("usebanned", mod.getUsagebanned().toString());
+                arguments.put("breakbanned", mod.getBreakingbanned().toString());
+                arguments.put("placebanned", mod.getPlacingbanned().toString());
+                arguments.put("ownbanned", mod.getOwnershipbanned().toString());
+                arguments.put("craftbanned", mod.getCraftbanned().toString());
+                arguments.put("worldbanned", "false");
+                arguments.put("modname", mod.getModname());
+                arguments.put("hidden", mod.getHidden() ? "show" : "hide");
+
+                Text.Builder send = Text.builder();
+
+                String banreason = "";
+                if (!mod.getBanreason().isEmpty()) {
+                    banreason = Messages.bannedItemReason;
+                }
+
+                if (src.hasPermission(Permissions.LIST_HIDDEN_EDIT)) {
+                    send.append(Text.builder().append(Messages.parseMessage(Messages.bannedListHide, arguments))
+                            .onClick(TextActions.executeCallback(changeHiddenMod(mod.getMod())))
+                            .onHover(TextActions.showText(Messages.parseMessage(Messages.bannedListHideHover, arguments))).build());
+                    send.append(plugin.fromLegacy(" "));
+                }
+
+                String banInfo = Messages.bannedItemHover;
+                if ((src.hasPermission(Permissions.LIST_EXTRA) && src.hasPermission(Permissions.EDIT_BANNED_ITEM))) {
+                    banInfo = banInfo + "\n" + Messages.bannedItemExtraInfo + "\n" + Messages.bannedItemEdit;
+                    send.append(Messages.parseMessage(Messages.bannedMod + banreason, arguments))
+                            .onClick(TextActions.runCommand("/restrict edit " + mod.getMod()))
+                            .onHover(TextActions.showText(Messages.parseMessage(banInfo, arguments)));
+                } else if (src.hasPermission(Permissions.LIST_EXTRA)) {
+                    banInfo = banInfo + "\n" + Messages.bannedItemExtraInfo;
+                    send.append(Messages.parseMessage(Messages.bannedMod + banreason, arguments))
+                            .onHover(TextActions.showText(Messages.parseMessage(banInfo, arguments)));
+                } else if (src.hasPermission(Permissions.EDIT_BANNED_ITEM)) {
+                    banInfo = banInfo + "\n" + Messages.bannedItemEdit;
+                    send.append(Messages.parseMessage(Messages.bannedMod + banreason, arguments))
+                            .onClick(TextActions.runCommand("/restrict edit " + mod.getMod()))
+                            .onHover(TextActions.showText(Messages.parseMessage(banInfo, arguments)));
+                } else {
+                    send.append(Messages.parseMessage(Messages.bannedMod + banreason, arguments))
+                            .onHover(TextActions.showText(Messages.parseMessage(banInfo, arguments)));
+                }
+
+                contents.add(send.build());
+            }
+
             for (ItemData item : items) {
                 if (item.getHidden()) {
                     continue;
@@ -172,6 +280,19 @@ public class BanList implements CommandExecutor {
                     item.setHidden(!item.getHidden());
                     String hidden = item.getHidden() ? "true" : "false";
                     consumer.sendMessage(plugin.fromLegacy("&6" +itemID + " &2hidden set to: &6" + hidden));
+                }
+            }
+        };
+    }
+
+    private Consumer<CommandSource> changeHiddenMod(String modID) {
+        return consumer -> {
+            final java.util.List<ModData> mods = new ArrayList<ModData>(plugin.getModData());
+            for (ModData mod : mods) {
+                if (mod.getMod().equals(modID)) {
+                    mod.setHidden(!mod.getHidden());
+                    String hidden = mod.getHidden() ? "true" : "false";
+                    consumer.sendMessage(plugin.fromLegacy("&6" +modID + " &2hidden set to: &6" + hidden));
                 }
             }
         };

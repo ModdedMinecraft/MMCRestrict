@@ -44,6 +44,7 @@ public class Messages {
     public static String bannedItemExtraInfo = "&7Id: {itemid}";
     public static String bannedItemEdit = "&3Click to edit this item";
     public static String bannedItemReason = " &3- &7{banreason}";
+    public static String bannedMod = "&3- [Mod] &6{modname}";
     public static String bannedItem = "&3- &6{itemname}";
     public static String bannedItemNonSet = "&eNo banned items have been set";
     public static String bannedItemNonHidden = "&eNo banned items have been hidden";
@@ -70,6 +71,7 @@ public class Messages {
         bannedListPadding = check(messages.getNode("list", "padding"), bannedListPadding).getString();
         bannedItemNonHidden = check(messages.getNode("list", "error", "non-hidden"), bannedItemNonHidden).getString();
         bannedItemNonSet = check(messages.getNode("list", "error", "non-set"), bannedItemNonSet).getString();
+        bannedMod = check(messages.getNode("list", "formatting", "mod-name"), bannedMod).getString();
         bannedItem = check(messages.getNode("list", "formatting", "name"), bannedItem).getString();
         bannedItemReason = check(messages.getNode("list", "formatting", "reason"), bannedItemReason).getString();
         bannedItemHover = check(messages.getNode("list", "hover", "info"), bannedItemHover).getString();

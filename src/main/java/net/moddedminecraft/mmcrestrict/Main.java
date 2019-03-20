@@ -8,6 +8,7 @@ import net.moddedminecraft.mmcrestrict.Config.Config;
 import net.moddedminecraft.mmcrestrict.Config.Messages;
 import net.moddedminecraft.mmcrestrict.Data.ItemData;
 import net.moddedminecraft.mmcrestrict.Data.ItemData.ItemDataSerializer;
+import net.moddedminecraft.mmcrestrict.Data.ModData;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
@@ -65,6 +66,7 @@ public class Main {
     private CommandManager cmdManager = Sponge.getCommandManager();
 
     private Map<String, ItemData> items;
+    private Map<String, ModData> modslist;
 
     private Task autoPurgeTask = null;
 
@@ -77,6 +79,7 @@ public class Main {
         Sponge.getEventManager().registerListeners(this, new EventListener(this));
 
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(ItemData.class), new ItemDataSerializer());
+        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(ModData.class), new ModData.ModDataSerializer());
 
         loadCommands();
         loadData();
@@ -123,6 +126,14 @@ public class Main {
 
 
     private void loadCommands() {
+
+        // /restrict mod
+        CommandSpec modAdd = CommandSpec.builder()
+                .description(Text.of("Add a full mod to the banned items list"))
+                .executor(new Mod(this))
+                .arguments(GenericArguments.optional(GenericArguments.string(Text.of("Mod"))))
+                .permission(Permissions.ADD_BANNED_ITEM)
+                .build();
 
         // /restrict add
         CommandSpec itemAddHand = CommandSpec.builder()
@@ -206,6 +217,7 @@ public class Main {
         CommandSpec restrict = CommandSpec.builder()
                 .description(Text.of("Base restrict command"))
                 .executor(new Help(this))
+                .child(modAdd, "mod")
                 .child(itemAddHand, "add")
                 .child(itemRemove, "remove")
                 .child(itemEdit, "edit")
@@ -234,12 +246,18 @@ public class Main {
         for (ItemData item : itemList) {
             this.items.put(item.getItemid(), item);
         }
+        List<ModData> modList = rootNode.getNode("Mods").getList(TypeToken.of(ModData.class));
+        this.modslist = new HashMap<String, ModData>();
+        for (ModData mod : modList) {
+            this.modslist.put(mod.getMod(), mod);
+        }
     }
 
     public void saveData() throws IOException, ObjectMappingException {
         HoconConfigurationLoader loader = getItemDataLoader();
         ConfigurationNode rootNode = loader.load();
         rootNode.getNode("Items").setValue(ItemDataSerializer.token, new ArrayList<ItemData>(this.items.values()));
+        rootNode.getNode("Mods").setValue(ModData.ModDataSerializer.token, new ArrayList<ModData>(this.modslist.values()));
         loader.save(rootNode);
     }
 
@@ -316,15 +334,27 @@ public class Main {
         return this.items.remove(item);
     }
 
+    public Collection<ModData> getModData() {
+        return Collections.unmodifiableCollection(this.modslist.values());
+    }
+
+    public ModData addMod(ModData mod) {
+        return this.modslist.put(mod.getMod(), mod);
+    }
+
+    public ModData removeMod(String mod) {
+        return this.modslist.remove(mod);
+    }
+
     public Text fromLegacy(String legacy) {
         return TextSerializers.FORMATTING_CODE.deserializeUnchecked(legacy);
     }
 
-    public boolean checkPerm(CommandSource src, String banType, String itemID) {
-        if (src.hasPermission(Permissions.ITEM_BYPASS + ".all." + itemID.replace(":", "."))) {
+    public boolean checkPerm(CommandSource src, String banType, String ID) {
+        if (src.hasPermission(Permissions.ITEM_BYPASS + ".all." + ID.replace(":", "."))) {
             return false;
         } else {
-            return !src.hasPermission(Permissions.ITEM_BYPASS + "." + banType + "." + itemID.replace(":", "."));
+            return !src.hasPermission(Permissions.ITEM_BYPASS + "." + banType + "." + ID.replace(":", "."));
         }
     }
 
