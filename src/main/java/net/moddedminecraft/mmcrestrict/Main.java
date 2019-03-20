@@ -325,10 +325,10 @@ public class Main {
     }
 
     public boolean checkPerm(CommandSource src, String banType, String itemID) {
-        if (!src.hasPermission(Permissions.ITEM_BYPASS + "." + banType + "." + itemID.replace(":", "."))) {
-            return true;
-        } else {
+        if (src.hasPermission(Permissions.ITEM_BYPASS + ".all." + itemID.replace(":", "."))) {
             return false;
+        } else {
+            return !src.hasPermission(Permissions.ITEM_BYPASS + "." + banType + "." + itemID.replace(":", "."));
         }
     }
 
