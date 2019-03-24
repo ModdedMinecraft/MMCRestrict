@@ -423,6 +423,9 @@ public class EventListener {
         final List<ItemData> items = new ArrayList<ItemData>(plugin.getItemData());
         final List<ModData> mods = new ArrayList<ModData>(plugin.getModData());
         String itemID = blockSnapshot.getExtendedState().getType().getId();
+        if (!blockSnapshot.getState().getType().getItem().isPresent()) {
+            return false;
+        }
 
         for (ModData mod : mods) {
             if (itemID.startsWith(mod.getMod())
@@ -449,7 +452,6 @@ public class EventListener {
         }
 
         ItemStack itemStack;
-
         try {
             itemStack = ItemStack.builder().fromBlockState(blockSnapshot.getState()).build();
         } catch (Exception e) {
