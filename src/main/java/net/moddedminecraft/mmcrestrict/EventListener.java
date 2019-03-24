@@ -23,6 +23,7 @@ import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.transaction.SlotTransaction;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 
 import java.util.ArrayList;
@@ -489,7 +490,7 @@ public class EventListener {
                             plugin.notifyOnlineStaff(plugin.fromLegacy("&8[&6MMCRestrict&8] &c" + player.getName() + " tried to " + banType.toLowerCase() + " " + item.getItemname()));
                         }
                         player.sendMessage(plugin.fromLegacy("&c" + item.getItemname() + " is banned" + reason));
-                        checkInventory(player);
+                        Task.builder().execute(runnable -> checkInventory(player)).delay(250, TimeUnit.MILLISECONDS).name("mmcrestrict-s-checkInventory-isBanned").submit(plugin);
                         return true;
                     }
                 }
