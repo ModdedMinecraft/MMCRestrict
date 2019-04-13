@@ -17,7 +17,6 @@ import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.item.inventory.*;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -37,10 +36,10 @@ public class EventListener {
         plugin = instance;
     }
 
-    @Listener
+    /*@Listener
     public void onPlayerJoin(ClientConnectionEvent.Join event, @Root Player player) {
         checkInventory(player);
-    }
+    }*/
 
     @Listener
     public void onItemPickup(ChangeInventoryEvent.Pickup event, @Root Player player) {
