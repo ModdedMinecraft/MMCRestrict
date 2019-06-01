@@ -325,6 +325,23 @@ public class EventListener {
     }
 
     @Listener
+    public void onSwapHand(ChangeInventoryEvent.SwapHand event, @Root Player player){
+        if (player.hasPermission(Permissions.ITEM_BYPASS)){
+            return;
+        }
+        for (SlotTransaction transaction : event.getTransactions()) {
+            ItemStack itemStack = transaction.getFinal().createStack();
+            if (itemStack.getType().equals(ItemTypes.NONE)) {
+                continue;
+            }
+
+            if (checkBanned(itemStack, "own", player)){
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @Listener
     public void onClickInventoryEvent(ClickInventoryEvent event, @Root Player player) {
         if (player.hasPermission(Permissions.ITEM_BYPASS)) {
             return;
